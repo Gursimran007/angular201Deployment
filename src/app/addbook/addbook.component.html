@@ -1,0 +1,14 @@
+<div class="container">
+  <div class="row">
+    <div class="col-lg-12">
+        <mat-radio-group>
+            <mat-radio-button value="1">Option 1</mat-radio-button>
+            <mat-radio-button value="2">Option 2</mat-radio-button>
+          </mat-radio-group>
+          <mat-form-field>
+            <input matInput placeholder="search by ISBN" #addBook (Keyup.enter)="searchByIsbn(addBook.value)">
+            </mat-form-field>
+            <button mat-raised-button color="primary">Add</button>
+      </div>
+  </div>
+  </div>

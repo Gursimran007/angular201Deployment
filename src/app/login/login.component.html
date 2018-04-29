@@ -1,0 +1,40 @@
+<div class="mainContainer">
+  <div class="container">
+    <div class="row">
+      <div class="card-container col-xs-12 col-sm-10 col-md-8 col-lg-4">
+        <mat-card class="matCard">
+          <mat-card-header>
+            <div mat-card-avatar class="avatar"></div>
+            <mat-card-title>Login</mat-card-title>
+            <mat-card-subtitle>Welcome to Anytime Library</mat-card-subtitle>
+          </mat-card-header>
+          <mat-card-content>
+            <form class="loginForm" [formGroup]="LoginForm">
+              <mat-form-field class="full-width">
+                <input matInput id="username" formControlName="username" placeholder="username">
+                <mat-error *ngIf="!LoginForm.get('username').valid && LoginForm.get('username').touched">Please enter a valid username</mat-error>
+              </mat-form-field>
+              <mat-form-field class="full-width">
+                <input matInput id="password" formControlName="password" [type]="hide ? 'text' : 'password'" placeholder="password">
+                <mat-icon matSuffix (click)="hide = !hide">{{hide ? 'visibility' : 'visibility_off'}}</mat-icon>
+                <mat-error *ngIf="!LoginForm.get('password').valid && LoginForm.get('password').touched" class="help-block">Password is not correct!</mat-error>
+              </mat-form-field>
+              <div class="form-action">
+                <button mat-raised-button color="primary" (clicl)="login()">Login</button>
+                <button mat-raised-button color="primary" (click)="signInWithGoogle()">
+                  <i class="fab fa-google"></i>
+                  Login with Google
+                </button>
+              </div>
+              <div id="signup">Not a member?<a routerLink="/signup" style="color :blue"> SIGN UP!</a></div>
+            </form>
+          </mat-card-content>
+        </mat-card>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ?<button mat-mini-fab color="primary">
+    <mat-icon aria-label="sign-up">add</mat-icon>
+  </button> -->

@@ -1,0 +1,14 @@
+<div class="container">
+  <div class="row">
+    <div class="col-lg-12">
+      <div class="row" style="justify-content: center">
+        <img [src]="profilePic" id="profileImage">
+      </div>
+    </div>
+    <div class="row">
+      <div *ngFor="let user of users">
+        <div>{{user.username}}</div>
+      </div>
+    </div>
+  </div>
+</div>

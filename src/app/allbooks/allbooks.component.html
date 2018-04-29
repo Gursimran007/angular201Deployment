@@ -1,0 +1,52 @@
+<div class="col-md-12" style="display : flex;">
+  <div class="col-md-2" style="top: 2rem;">
+    <div id="filter">
+      <mat-expansion-panel [expanded]="true">
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            Categories
+          </mat-panel-title>
+        </mat-expansion-panel-header>
+        <div *ngIf="emptyCategory">
+          No categories found..
+        </div>
+        <div *ngFor="let category of categories">
+          <mat-checkbox class="example-margin" value={{category}} #check (change)="filterBooks($event , check.value)" color='primary'>{{category}}</mat-checkbox>
+        </div>
+      </mat-expansion-panel>
+      <div id="filterAction">
+        <button mat-raised-button color="primary" style="width: 100%" (click)="clearFilter()">Clear</button>
+      </div>
+      <div>
+        <button mat-raised-button color="primary" style="width: 100%; margin-top: 10px;" (click)="openBookDialog()">Add Book</button>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-9" *ngIf="(booksObservable |async) else contentLoading" id="cardsContainer">
+    <div *ngFor="let book of booksObservable |async ; let i = index " class="col-md-4" id="booksCard">
+      <mat-card>
+        <img mat-card-image src={{book.imageLinks}} style="max-height : 230px ; padding : 12px" alt="book image">
+        <div>
+          <mat-card-header style="margin: 0 !important">
+            <mat-card-title style="font-weight: bold ; height: 45px;">{{book.title}}</mat-card-title>
+            <mat-card-subtitle>{{book.categories}}</mat-card-subtitle>
+          </mat-card-header>
+          <div>
+            {{book.authors}}
+          </div>
+        </div>
+        <mat-card-actions>
+          <button mat-raised-button color="primary" id="knowMore">
+            <i class="material-icons">thumb_up</i>
+          </button>
+          <button mat-raised-button color="primary" id="knowMore" (click)="openDialog(book)">Know more</button>
+          <button mat-raised-button color="accent">Issue</button>
+          <!-- <button mat-raised-button color="warn">Delete</button> -->
+        </mat-card-actions>
+      </mat-card>
+    </div>
+  </div>
+</div>
+<ng-template #contentLoading>
+  <mat-spinner style="margin: 10rem auto"></mat-spinner>
+</ng-template>

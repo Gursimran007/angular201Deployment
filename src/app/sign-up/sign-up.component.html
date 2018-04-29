@@ -1,0 +1,39 @@
+<div class="mainContainer">
+  <div class="container">
+    <div class="row">
+      <div class="card-container col-xs-12 col-sm-10 col-md-8 col-lg-4">
+        <mat-card>
+          <mat-card-header>
+            <div mat-card-avatar class="avatar"></div>
+            <mat-card-title>Sign-up</mat-card-title>
+            <mat-card-subtitle>Welcome to Anytime Library</mat-card-subtitle>
+          </mat-card-header>
+          <mat-card-content>
+            <form [formGroup]="signUpForm" (ngSubmit)="onSubmit()">
+              <mat-form-field class="full-width">
+                <input matInput id="username" formControlName="username" placeholder="username" autocomplete="username">
+                <mat-error *ngIf="!signUpForm.get('username').valid && signUpForm.get('username').touched">Please enter a valid username</mat-error>
+              </mat-form-field>
+              <mat-form-field class="full-width">
+                <input matInput id="email" formControlName="email" placeholder="email" autocomplete="email">
+                <mat-error *ngIf="!signUpForm.get('email').valid && signUpForm.get('email').touched">Please enter a valid email!</mat-error>
+              </mat-form-field>
+              <mat-form-field class="full-width">
+                <input matInput id="password" formControlName="password" [type]="hide ? 'password' : 'text'" placeholder="password">
+                <mat-icon matSuffix (click)="hide = !hide">{{hide ? 'visibility' : 'visibility_off'}}</mat-icon>
+                <mat-error *ngIf="!signUpForm.get('password').valid && signUpForm.get('password').touched">Password is not correct!</mat-error>
+              </mat-form-field>
+              <mat-form-field class="full-width">
+                <input matInput id="rePassword" formControlName="rePassword" [type]="hide ? 'password' : 'text'" placeholder="confirm password">
+                <mat-icon matSuffix (click)="hide = !hide">{{hide ? 'visibility' : 'visibility_off'}}</mat-icon>
+                <mat-error *ngIf="!signUpForm.get('rePassword').valid && signUpForm.get('rePassword').touched">Password are not matching!</mat-error>
+              </mat-form-field>
+              <button mat-raised-button color="primary">Sign Up</button>
+              <button mat-raised-button color="accent" (click)="goBackToLogin()">Login</button>
+            </form>
+          </mat-card-content>
+        </mat-card>
+      </div>
+    </div>
+  </div>
+</div>

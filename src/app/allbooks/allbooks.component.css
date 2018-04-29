@@ -1,0 +1,24 @@
+#cardsContainer{
+    top: 2rem ;
+    display : flex ;
+    flex-wrap: wrap;
+    margin: 0 auto;
+}
+
+#booksCard{
+    height : 448px ; 
+    flex-wrap: wrap;
+    transition: transform .1s ease-in-out; 
+}
+
+#knowMore:hover{
+    transform: scale(1.09);
+}
+
+#filter{
+    position: fixed;
+}
+
+#filterAction{
+    margin-top: 10px;
+}

@@ -1,0 +1,15 @@
+.labelForDescription{
+    font-weight: bold;
+}
+
+.bookDetailButtons{
+    margin: 5px;
+}
+
+#deleteBook{
+    margin-top: 9px; 
+}
+
+#deleteBook:onhover {
+    cursor: hand;
+}

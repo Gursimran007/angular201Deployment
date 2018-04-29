@@ -1,0 +1,41 @@
+<nav class="navbar navbar-expand-md navbar-dark bg-primary ">
+  <a class="navbar-brand" routerLink="/dashboard">Anytime Library</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault"
+    aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarsExampleDefault">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item ">
+        <a class="nav-link" routerLinkActive="nav-link-active" [routerLinkActiveOptions]="{exact : true}" routerLink="/dashboard">Home </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" routerLinkActive="nav-link-active" [routerLink]="'/library'">Library</a>
+      </li>
+    </ul>
+    <div id="searchElement" class="mr-2">
+      <input id="search" [(ngModel)]="searchValue" #searchElement placeholder="Search" (keyup.enter)="searchResult(searchValue,'name')">
+      <div id="searchMaterialIcon">
+        <i class="material-icons md-26" id="serachIcon" (click)="searchKeyword(searchElement)">search</i>
+      </div>
+    </div>
+    <button mat-icon-button [matMenuTriggerFor]="menu">
+      <mat-icon style="color: white ; border: none">more_vert</mat-icon>
+    </button>
+    <mat-menu id="menu" #menu="matMenu">
+      <button mat-menu-item (click)="goToUserProfile()">Profile</button>
+      <button mat-menu-item color="accent" type="button" (click)="logout()">Logout</button>
+    </mat-menu>
+    <!-- <mat-form-field>
+      <mat-select placeholder="Welcome">
+        <mat-option>
+          View Profile
+        </mat-option>
+        <mat-option (click)="logout()">
+          Logout
+        </mat-option>
+      </mat-select>
+    </mat-form-field> -->
+    <!-- <button mat-raised-button color="accent" class="btn btn my-2 my-sm-0" type="button" (click)="logout()">Logout</button> -->
+  </div>
+</nav>
