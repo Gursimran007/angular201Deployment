@@ -42,6 +42,6 @@ export class BookEditComponent implements OnInit {
   }
 
   submitBookDetails(name?: string, authorName?: string, category?: string) {
-    this.bookService.updateBookRecords(this.data.bookDetails.id, name, authorName, this.category);
+    this.bookService.updateBookRecords(this.bookData.bookDetails.ISBN, name, authorName, this.category);
   }
 }

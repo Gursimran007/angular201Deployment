@@ -14,7 +14,7 @@
       </li>
     </ul>
     <div id="searchElement" class="mr-2">
-      <input id="search" [(ngModel)]="searchValue" #searchElement placeholder="Search" (keyup.enter)="searchResult(searchValue,'name')">
+      <input id="search"  #searchElement placeholder="Search" (keyup.enter)="searchKeyword(searchElement.value)">
       <div id="searchMaterialIcon">
         <i class="material-icons md-26" id="serachIcon" (click)="searchKeyword(searchElement)">search</i>
       </div>

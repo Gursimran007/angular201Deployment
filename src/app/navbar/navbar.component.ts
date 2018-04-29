@@ -27,9 +27,9 @@ export class NavbarComponent implements OnInit {
     }
   }
 
-  searchResult(searchValue , name) {
-    this.book.searchBook(searchValue);
-  }
+  // searchResult(searchValue , name) {
+  //   this.book.searchBook(searchValue);
+  // }
 
   searchKeyword(serachValue) {
     this.book.searchBook(serachValue.value);

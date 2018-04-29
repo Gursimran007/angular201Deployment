@@ -19,13 +19,11 @@
                 <mat-error *ngIf="!signUpForm.get('email').valid && signUpForm.get('email').touched">Please enter a valid email!</mat-error>
               </mat-form-field>
               <mat-form-field class="full-width">
-                <input matInput id="password" formControlName="password" [type]="hide ? 'password' : 'text'" placeholder="password">
-                <mat-icon matSuffix (click)="hide = !hide">{{hide ? 'visibility' : 'visibility_off'}}</mat-icon>
+                <input matInput id="password" formControlName="password" type="password" placeholder="password">
                 <mat-error *ngIf="!signUpForm.get('password').valid && signUpForm.get('password').touched">Password is not correct!</mat-error>
               </mat-form-field>
               <mat-form-field class="full-width">
-                <input matInput id="rePassword" formControlName="rePassword" [type]="hide ? 'password' : 'text'" placeholder="confirm password">
-                <mat-icon matSuffix (click)="hide = !hide">{{hide ? 'visibility' : 'visibility_off'}}</mat-icon>
+                <input matInput id="rePassword" formControlName="rePassword" type="password" placeholder="confirm password">
                 <mat-error *ngIf="!signUpForm.get('rePassword').valid && signUpForm.get('rePassword').touched">Password are not matching!</mat-error>
               </mat-form-field>
               <button mat-raised-button color="primary">Sign Up</button>

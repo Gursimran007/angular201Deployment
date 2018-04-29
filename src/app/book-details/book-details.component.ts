@@ -16,13 +16,13 @@ import { AllbooksComponent } from '../allbooks/allbooks.component';
 })
 export class BookDetailsComponent implements OnInit {
   private id: string;
-  book: Object;
+  book: any;
   avatar;
   constructor( @Inject(MAT_DIALOG_DATA) public data: any , public dialogRefClose:MatDialogRef<BookDetailsComponent> , private db: AngularFireDatabase  , private route: ActivatedRoute ,
    public bk: BooksService , public dialog: MatDialog) {  }
   ngOnInit() {
    this.id = this.route.snapshot.params['id'];
-   this.book = this.data;
+   this.book = this.data.bookDetails;
    console.log(this.book);
   }
 

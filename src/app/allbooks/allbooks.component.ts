@@ -108,7 +108,7 @@ export class AllbooksComponent implements OnInit {
     }
   }
 
-  clearFilter(reference) {
+  clearFilter() {
     this.booksObservable = this.book.books;
     let unCheck;
     unCheck = this.categoryIdentifier;

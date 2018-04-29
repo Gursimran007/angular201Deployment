@@ -45,6 +45,7 @@ import swal from 'sweetalert'
 import { AuthGuardService } from './services/auth-guard.service';
 import { BookEditComponent } from './book-edit/book-edit.component';
 import { UserEditComponent } from './user-edit/user-edit.component';
+import { ServiceWorkerModule } from '@angular/service-worker';
 @NgModule({
   declarations: [
     AppComponent,
@@ -69,6 +70,7 @@ import { UserEditComponent } from './user-edit/user-edit.component';
     HttpModule,
     HttpClientModule,
     AngularFireModule.initializeApp(environment.firebase, 'angular-auth-firebase'),
+    environment.production ? ServiceWorkerModule.register('/ngsw-worker.js') : [],
     AngularFireAuthModule,
     AngularFireDatabaseModule,
     NgbModule.forRoot(),

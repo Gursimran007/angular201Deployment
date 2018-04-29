@@ -1,0 +1,12 @@
+{
+    "short_name": "Anytime-Library",
+    "name": "Anytime-Library Angular201",
+    "start_url": "/",
+
+    "theme_color": "#f48c5b",
+    "background_color": "#ffffff",
+
+    "display": "standalone",
+    "orientation": "portrait"
+
+}
