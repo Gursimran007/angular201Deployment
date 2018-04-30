@@ -1,13 +1,17 @@
 <div class="container">
   <div class="row">
     <div class="col-lg-12">
-      <div class="row" style="justify-content: center">
-        <img [src]="profilePic" id="profileImage">
+      <div *ngIf="!isAuthPicAvailable" class="row" style="justify-content: center">
+        <img [src]="profilePic" class="profileImage">
+      </div>
+      <div *ngIf="isAuthPicAvailable" class="row" style="justify-content: center">
+        <img [src]="defaultProfilePic" class="profileImage">
       </div>
     </div>
     <div class="row">
       <div *ngFor="let user of users">
         <div>{{user.username}}</div>
+        <div>{{user.email}}</div>
       </div>
     </div>
   </div>

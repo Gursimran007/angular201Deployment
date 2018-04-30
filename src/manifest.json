@@ -3,8 +3,15 @@
     "name": "Anytime-Library Angular201",
     "start_url": "/",
 
-    "theme_color": "#f48c5b",
+    "theme_color": "#4983ce",
     "background_color": "#ffffff",
+    "icons": [  
+    {  
+      "src": "./assets/images/Education_teaching_science_study_-04-512.png  ",  
+      "sizes": "512x512",  
+      "type": "image/png"  
+    }
+  ],  
 
     "display": "standalone",
     "orientation": "portrait"

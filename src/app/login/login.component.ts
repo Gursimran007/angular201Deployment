@@ -32,11 +32,7 @@ export class LoginComponent implements OnInit {
   }
 
   signInWithGoogle() {
-    this.authService.signInWithGoogle()
-      .then((res) => {
-        this.router.navigate(['/library']);
-      })
-      .catch((err) => console.log(err));
+    this.authService.signInWithGoogle();
   }
 
   askingForSignUp() {

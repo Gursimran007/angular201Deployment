@@ -10,6 +10,7 @@ import { BooksService } from '../services/books.service';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { AddbookComponent } from '../addbook/addbook.component';
 import swal from 'sweetalert'
+import { AuthService } from '../services/auth.service';
 @Component({
   selector: 'app-allbooks',
   templateUrl: './allbooks.component.html',
@@ -26,8 +27,9 @@ export class AllbooksComponent implements OnInit {
   category: string;
   filterCategories = [];
   emptyCategory: boolean = false;
+  isAdmin: boolean = false;
   @ViewChildren('check') categoryIdentifier;
-  constructor(private book: BooksService, fb: FormBuilder, private router: Router, public dialog: MatDialog) {
+  constructor(private book: BooksService, fb: FormBuilder, private router: Router, public dialog: MatDialog , private auth: AuthService) {
     this.options = fb.group({
       'fixed': false,
       'top': 100,
@@ -41,7 +43,21 @@ export class AllbooksComponent implements OnInit {
     this.book.searchValue.subscribe(res => {
       this.searchByName(res);
     });
+    this.auth.admin.subscribe(res => {
+      console.log(res);
+      this.isAdminOrUser(res);
+    })
   }
+
+isAdminOrUser(res){
+  if(res === true){
+    this.isAdmin = true;
+    console.log(this.isAdmin)
+  }
+  else {
+    this.isAdmin = false;
+  }
+}
 
   searchByName(value) {
     if (value === '' || value === undefined || value === null) {

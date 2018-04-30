@@ -1,5 +1,5 @@
-/*import { Injectable } from '@angular/core';
-import { Users } from '../Users';
+import { Injectable } from '@angular/core';
+import { UserProfile } from '../user-profile/user-profile.modal';
 
 const USER_KEY="user";
 
@@ -24,12 +24,12 @@ export class userDetailService {
     this.addToLocalStorage(USER_KEY,JSON.stringify(userObject));
   }
 
-  getUserObject():Users{
+  getUserObject():UserProfile{
     var userString=this.getStoredItem(USER_KEY);
     if(userString==null || userString=='undefined'){
       return null;
     }
-     return new Users(JSON.parse(this.getStoredItem(USER_KEY)));
+     return new UserProfile(JSON.parse(this.getStoredItem(USER_KEY)));
   }
 
   removeStoredUser(){
@@ -44,4 +44,4 @@ export class userDetailService {
       return true;
     }
   }
-} */
+} 

@@ -19,7 +19,7 @@
                 <mat-error *ngIf="!LoginForm.get('password').valid && LoginForm.get('password').touched" class="help-block">Password is not correct!</mat-error>
               </mat-form-field>
               <div class="form-action">
-                <button mat-raised-button color="primary" (clicl)="login()">Login</button>
+                <button mat-raised-button color="primary" (click)="login()">Login</button>
                 <button mat-raised-button color="primary" (click)="signInWithGoogle()">
                   <i class="fab fa-google"></i>
                   Login with Google
