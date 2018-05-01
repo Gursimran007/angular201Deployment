@@ -10,6 +10,7 @@ import { Router } from '@angular/router';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { BookDetailsComponent } from '../book-details/book-details.component';
 import { AuthService } from './auth.service';
+import { IssuedBookDetails } from './issuedBookDetails.modal';
 @Injectable()
 export class BooksService {
 
@@ -19,6 +20,7 @@ export class BooksService {
   book: Book;
   newBook: Book = null;
   newId: string;
+  isIssued = new BehaviorSubject<boolean>(false);
   constructor(private db: AngularFireDatabase, private http: Http, private router: Router , private auth: AuthService) { }
 
   getAllBooks() {
@@ -113,6 +115,65 @@ export class BooksService {
       issuedDate: this.getTodaysDate()
     })
     // console.log(this.issued);
+  }
+
+  checkBookIssued(bookId: number) {
+    let books = this.db.list<IssuedBookDetails>("/IssuedBooks/", ref => ref.orderByChild('userId').equalTo(this.auth.getCurrentUserId())).valueChanges();
+    books.subscribe(books => {
+      for (let book of books) {
+        if (book.bookId == bookId) {
+          this.isIssued.next(true);
+        }
+      }
+    });
+    if(this.isIssued.toString() === 'true'){
+      return true;
+    }
+    else {
+      return false;
+    }
+  }
+
+  getIssuedBooksDetails() {
+    let books = this.db.list<IssuedBookDetails>("/IssuedBooks/", ref => ref.orderByChild('userId')).valueChanges();
+    return books;
+  }
+  deleteIssuedBookDetails(recordId) {
+    this.db.object<IssuedBookDetails>("/IssuedBooks/" + recordId).remove();
+  }
+  getLikes(bookId) {
+    return this.db.object<Book>("/Books/" + bookId).valueChanges();
+  }
+
+  returnBook(bookId: number) {
+    let booksearched: Book;
+    let issueNumber: number;
+    let copiesCount: number;
+
+    this.booksArray.filter(book => {
+      if (book.id === bookId) {
+        booksearched = book;
+        issueNumber = book.issued;
+        copiesCount = book.copies;
+      }
+    })
+    this.db.object<Book>("/Books/" + bookId).update({
+      issued: issueNumber - 1,
+      copies: copiesCount + 1
+    })
+
+    let issuedBooksDetails = this.db.list<IssuedBookDetails>("/IssuedBooks", ref => ref.orderByChild('bookId')).valueChanges();
+    issuedBooksDetails.subscribe(
+      bookDetails => {
+        for (let book of bookDetails) {
+          if (book.bookId == bookId && book.userId === this.auth.getCurrentUserId()) {
+            console.log(book);
+            console.log(this.auth.getCurrentUserId());
+            this.db.object<IssuedBookDetails>('/IssuedBooks/' + book.id).remove();
+          }
+        }
+      }
+    )
   }
 
   getTodaysDate() {
