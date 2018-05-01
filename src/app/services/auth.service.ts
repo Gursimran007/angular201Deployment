@@ -45,7 +45,7 @@ export class AuthService implements OnInit {
     this._firebaseAuth.auth.signInWithPopup(
       new firebase.auth.GoogleAuthProvider()
     ).then(response => {
-      this.isUserLoggedIn.next(true);
+      this.isLoggedInNormal(this._firebaseAuth.authState)
       this.router.navigate(['/library']);
     }).catch(error => {
       this.isUserLoggedIn.next(false);
@@ -150,6 +150,8 @@ export class AuthService implements OnInit {
     this._firebaseAuth.auth.signOut()
       .then((res) => this.router.navigate(['/']));
   }
+
+  
 
   getAuthenticated(): boolean {
     return this.authState !== null;

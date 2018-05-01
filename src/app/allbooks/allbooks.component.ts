@@ -29,7 +29,7 @@ export class AllbooksComponent implements OnInit {
   emptyCategory: boolean = false;
   isAdmin: boolean = false;
   @ViewChildren('check') categoryIdentifier;
-  constructor(private book: BooksService, fb: FormBuilder, private router: Router, public dialog: MatDialog , private auth: AuthService) {
+  constructor(private book: BooksService, fb: FormBuilder, private router: Router, public dialog: MatDialog, private auth: AuthService) {
     this.options = fb.group({
       'fixed': false,
       'top': 100,
@@ -48,22 +48,22 @@ export class AllbooksComponent implements OnInit {
     })
   }
 
-isAdminOrUser(res){
-  if(res === true){
-    this.isAdmin = true;
-    console.log('value of admin',this.isAdmin)
+  isAdminOrUser(res) {
+    if (res === true) {
+      this.isAdmin = true;
+      console.log('value of admin', this.isAdmin)
+    }
+    else {
+      this.isAdmin = false;
+    }
   }
-  else {
-    this.isAdmin = false;
-  }
-}
 
   searchByName(value) {
     if (value === '' || value === undefined || value === null) {
       this.booksObservable = this.book.books;
     } else {
       this.booksObservable = this.booksObservable.map(books => {
-       return books.filter(book => {
+        return books.filter(book => {
           return book.title.toLowerCase().includes(value.toLowerCase());
         });
       });
@@ -73,17 +73,17 @@ isAdminOrUser(res){
   getCategories(): any {
     this.book.getAllBooks().subscribe(response => {
       response.map(res => {
-        if(res.length === 0){
+        if (res.length === 0) {
           this.emptyCategory = true;
         }
-        if(this.categories.length !== 0){
-          if(this.categories.includes(res.categories)){
+        if (this.categories.length !== 0) {
+          if (this.categories.includes(res.categories)) {
           }
-          else{
+          else {
             this.categories.push(res.categories);
           }
         }
-        else{
+        else {
           this.categories.push(res.categories);
         }
       });
@@ -152,5 +152,16 @@ isAdminOrUser(res){
 
       }
     });
+  }
+
+  issueBook(bookId: number) {
+    console.log(this.auth.getCurrentUser());
+    this.book.issueBook(bookId);
+    // this.booksService.checkBookIssued(bookId);
+  }
+
+  returnBook(bookId: number) {
+    // this.book.returnBook(bookId);
+    // this.book.checkBookIssued(bookId);
   }
 }

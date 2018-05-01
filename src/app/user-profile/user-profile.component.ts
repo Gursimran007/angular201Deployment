@@ -22,6 +22,7 @@ export class UserProfileComponent implements OnInit {
 
   userDetails(User){
     this.users = User;
+    console.log('response of user' , User);
     this.users.map(res => {
       console.log('response coming ' , res);
       this.profilePic = res.profilePic;

@@ -9,18 +9,23 @@ import Swal from 'sweetalert2'
 import { Router } from '@angular/router';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { BookDetailsComponent } from '../book-details/book-details.component';
+import { AuthService } from './auth.service';
 @Injectable()
 export class BooksService {
 
   searchValue = new BehaviorSubject<string>('');
   books: Observable<any>;
+  booksArray : Book[] = [];
   book: Book;
   newBook: Book = null;
   newId: string;
-  constructor(private db: AngularFireDatabase, private http: Http , private router: Router) { }
+  constructor(private db: AngularFireDatabase, private http: Http, private router: Router , private auth: AuthService) { }
 
   getAllBooks() {
-    this.books = this.db.list('/getBooks').valueChanges();
+    this.books = this.db.list<Book>('/getBooks').valueChanges();
+    this.db.list<Book>('/getBooks').valueChanges().subscribe(response  => {
+      this.booksArray = response;
+    });
     return this.books;
   }
 
@@ -33,10 +38,10 @@ export class BooksService {
       const responseJson = response.json();
       console.log(responseJson);
       for (let i = 0; i < responseJson['items'].length; i++) {
-          this.newBook = new Book(isbn,
+        this.newBook = new Book(isbn,
           responseJson.items[i].volumeInfo.authors[0],
-          responseJson.items[i].volumeInfo.categories[0], 1, responseJson.items[i].volumeInfo.description, responseJson.items[i].id ,
-            responseJson['items'][i].volumeInfo.imageLinks.thumbnail , 2 , responseJson['items'][i].volumeInfo.title);
+          responseJson.items[i].volumeInfo.categories[0], 1, responseJson.items[i].volumeInfo.description, responseJson.items[i].id,
+          responseJson['items'][i].volumeInfo.imageLinks.thumbnail, 2, responseJson['items'][i].volumeInfo.title);
       }
     });
     console.log(isbn.toString());
@@ -80,6 +85,45 @@ export class BooksService {
       authors: authorName,
       categories: category
     })
+  }
+
+  issueBook(bookid: number) {
+    let booksearched: Book;
+    let issueNumber: number;
+    let copiesCount: number;
+    this.booksArray.filter(book => {
+      if (book.id === bookid) {
+        booksearched = book;
+        issueNumber = book.issued;
+        copiesCount = book.copies;
+      }
+    })
+    console.log(issueNumber);
+    console.log(booksearched);
+
+    this.db.object<Book>("/getBooks/" + bookid).update({
+      issued: issueNumber + 1,
+      copies: copiesCount - 1
+    })
+
+    let issueBook = {
+      'userId': this.auth.userID, 'bookId': booksearched.id.toString(),
+      'bookName': booksearched.title.toString(), 'userName': this.auth.getName()
+    }
+    var ref = this.db.database.ref("/IssuedBooks").push(issueBook);
+    ref.update({
+      id: ref.key,
+      issuedDate: this.getTodaysDate()
+    })
+    // console.log(this.issued);
+  }
+
+  getTodaysDate() {
+    var currentDate = new Date();
+    var day = currentDate.getDate();
+    var month = currentDate.getMonth() + 1;
+    var year = currentDate.getFullYear();
+    return (day + "/" + month + "/" + year);
   }
 }
 
