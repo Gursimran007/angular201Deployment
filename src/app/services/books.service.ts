@@ -98,9 +98,6 @@ export class BooksService {
         copiesCount = book.copies;
       }
     })
-    console.log(issueNumber);
-    console.log(booksearched);
-
     this.db.object<Book>("/getBooks/" + bookid).update({
       issued: issueNumber + 1,
       copies: copiesCount - 1
