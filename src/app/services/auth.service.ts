@@ -26,6 +26,7 @@ export class AuthService implements OnInit {
   allUsers: Array<any>;
   userID: any;
   admin = new BehaviorSubject<Boolean>(false);
+
   constructor(private _firebaseAuth: AngularFireAuth, private database: AngularFireDatabase, private router: Router,
     private userDetail: userDetailService) {
     this._firebaseAuth.authState.subscribe(response => {
@@ -44,11 +45,9 @@ export class AuthService implements OnInit {
     this._firebaseAuth.auth.signInWithPopup(
       new firebase.auth.GoogleAuthProvider()
     ).then(response => {
-      console.log('response in google auth function', response);
       this.isUserLoggedIn.next(true);
       this.router.navigate(['/library']);
     }).catch(error => {
-      console.log('frist time it goes in error state');
       this.isUserLoggedIn.next(false);
       Swal({
         title: "Error",
@@ -67,8 +66,6 @@ export class AuthService implements OnInit {
 
   isLoggedIn() {
     this.isUserLoggedIn.subscribe(res => {
-      console.log('lets see if after login the value comes here ')
-      console.log(res);
       if (res === true) {
         return true;
       }
@@ -109,16 +106,19 @@ export class AuthService implements OnInit {
   // }
 
   login(username, password) {
-
     this.database.list('/Users', ref => ref.orderByChild('username').equalTo(username))
       .valueChanges().subscribe(res => {
         if (res.length !== 0) {
           this.allUsers = res;
           this.allUsers.map(data => {
-            console.log(data.username, data.password.toLowerCase());
+          
             if (data.username.toLowerCase() === 'gursimran' && data.password.toLowerCase() === 'anmol_4501') {
               this.admin.next(true);
             }
+            else {
+              this.admin.next(false);
+            }
+
             if (data.password === password) {
               this.isUserLoggedIn.next(true);
               this.isLoggedInNormal(data);
@@ -144,6 +144,7 @@ export class AuthService implements OnInit {
 
   logout() {
     this.isUserLoggedIn.next(false);
+    this.admin.next(false);
     this.userDetail.addToLocalStorage(isAuthorized, this.isUserAuthorized.value.toString())
     this.userDetail.addToLocalStorage(isLoggedIn, this.isUserLoggedIn.value.toString())
     this._firebaseAuth.auth.signOut()

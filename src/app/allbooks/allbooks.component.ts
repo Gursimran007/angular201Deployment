@@ -44,7 +44,6 @@ export class AllbooksComponent implements OnInit {
       this.searchByName(res);
     });
     this.auth.admin.subscribe(res => {
-      console.log(res);
       this.isAdminOrUser(res);
     })
   }
@@ -52,7 +51,7 @@ export class AllbooksComponent implements OnInit {
 isAdminOrUser(res){
   if(res === true){
     this.isAdmin = true;
-    console.log(this.isAdmin)
+    console.log('value of admin',this.isAdmin)
   }
   else {
     this.isAdmin = false;
