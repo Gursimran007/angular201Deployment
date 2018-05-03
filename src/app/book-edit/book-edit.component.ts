@@ -1,7 +1,7 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
-import { BooksService } from "../services/books.service";
-import { Book } from "../book-details/book.modal";
+import { BooksService } from '../services/books.service';
+import { Book } from '../book-details/book.modal';
 import { AllbooksComponent } from '../allbooks/allbooks.component';
 @Component({
   selector: 'app-book-edit',
@@ -27,14 +27,12 @@ export class BookEditComponent implements OnInit {
   getCategories(): any {
     this.bookService.getAllBooks().subscribe(response => {
       response.map(res => {
-        if(this.categories.length !== 0){
-          if(this.categories.includes(res.categories)){
-          }
-          else{
+        if (this.categories.length !== 0) {
+          if (this.categories.includes(res.categories)) {
+          }else {
             this.categories.push(res.categories);
           }
-        }
-        else{
+        } else {
           this.categories.push(res.categories);
         }
       });
@@ -42,6 +40,6 @@ export class BookEditComponent implements OnInit {
   }
 
   submitBookDetails(name?: string, authorName?: string, category?: string) {
-    this.bookService.updateBookRecords(this.bookData.bookDetails.ISBN, name, authorName, this.category);
+    this.bookService.updateBookRecords(this.bookData.ISBN, name, authorName, this.category);
   }
 }

@@ -3,7 +3,6 @@ import { FormsModule } from '@angular/forms';
 import { NgModule } from '@angular/core';
 import { HttpModule } from '@angular/http';
 import { HttpClientModule } from '@angular/common/http';
-// import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import {NoopAnimationsModule} from '@angular/platform-browser/animations';
 import { AngularFireModule } from 'angularfire2';
 import { AngularFireDatabaseModule } from 'angularfire2/database';
@@ -21,7 +20,6 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { LoginComponent } from './login/login.component';
 import { SignUpComponent } from './sign-up/sign-up.component';
 import { UserProfileComponent } from './user-profile/user-profile.component';
-import { DashboardComponent } from './dashboard/dashboard.component';
 import { ReactiveFormsModule } from '@angular/forms';
 // import { StarRatingModule } from 'angular-star-rating';
 import { AuthService } from './services/auth.service';
@@ -57,7 +55,6 @@ import { FooterComponent } from './footer/footer.component';
     LoginComponent,
     SignUpComponent,
     UserProfileComponent,
-    DashboardComponent,
     AddbookComponent,
     BookEditComponent,
     UserEditComponent,

@@ -120,6 +120,11 @@ export class BooksService {
       authors: authorName,
       categories: category
     });
+    Swal({
+      title: 'Updated!',
+      text: 'Book successfully updated',
+      type: 'success'
+    });
   }
 
   issueBook(bookid: number) {
