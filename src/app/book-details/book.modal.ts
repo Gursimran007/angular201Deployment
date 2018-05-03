@@ -10,7 +10,7 @@ export class Book {
     title: string;
     issued: number;
     constructor(ISBN?: number, authors?: string, categories?: string, copies?: number,
-        description?: string, id?: number, imageLinks?: string,issued?: number ,likes?: number, title?: string) {
+        description?: string, id?: number, imageLinks?: string, issued?: number , likes?: number, title?: string) {
 
         this.ISBN = ISBN;
         this.authors = authors;

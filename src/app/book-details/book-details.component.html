@@ -16,13 +16,13 @@
           </div>
           <div style="display: flex; justify-content: center">
             <div>
-              <button class="bookDetailButtons" mat-raised-button color="accent">Issue</button>
+              <button class="bookDetailButtons"*ngIf="!isAdmin" mat-raised-button color="accent">Issue</button>
             </div>
             <div>
-              <button class="bookDetailButtons" mat-raised-button color="primary" (click)="openEditDialog()"><i class="material-icons">edit</i></button>
+              <button class="bookDetailButtons" *ngIf="isAdmin" mat-raised-button color="primary" (click)="openEditDialog()"><i class="material-icons">edit</i></button>
             </div>
             <div>
-              <button class="bookDetailButtons" mat-raised-button color="warn"  (click)="deleteBook(book.bookDetails.ISBN)"><i class="material-icons">delete</i></button>
+              <button class="bookDetailButtons" *ngIf="isAdmin" mat-raised-button color="warn" (click)="deleteBook(book.ISBN)"><i class="material-icons">delete</i></button>
               <!-- <div id="deleteBook"><i class="material-icons">delete</i></div> -->
               <!-- <button><i class="material-icons">delete</i></button> -->
             </div>

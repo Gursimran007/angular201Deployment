@@ -1,5 +1,0 @@
-FILE QUARANTINED
-
-Microsoft Forefront Protection for Exchange Server MTW02HBX02 removed a file since it was found to match a filter.
-File name: "angular.zip->karma.conf.js"
-Filter name: "FILE FILTER= MindTree Blocked Attachments List: *.js"

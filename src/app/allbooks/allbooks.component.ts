@@ -9,7 +9,7 @@ import { BookDetailsComponent } from '../book-details/book-details.component';
 import { BooksService } from '../services/books.service';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { AddbookComponent } from '../addbook/addbook.component';
-import swal from 'sweetalert'
+import Swal from 'sweetalert2';
 import { AuthService } from '../services/auth.service';
 @Component({
   selector: 'app-allbooks',
@@ -26,8 +26,8 @@ export class AllbooksComponent implements OnInit {
   searchObservable: Observable<any>;
   category: string;
   filterCategories = [];
-  emptyCategory: boolean = false;
-  isAdmin: boolean = false;
+  emptyCategory: Boolean = false;
+  isAdmin: Boolean = false;
   @ViewChildren('check') categoryIdentifier;
   constructor(private book: BooksService, fb: FormBuilder, private router: Router, public dialog: MatDialog, private auth: AuthService) {
     this.options = fb.group({
@@ -45,15 +45,13 @@ export class AllbooksComponent implements OnInit {
     });
     this.auth.admin.subscribe(res => {
       this.isAdminOrUser(res);
-    })
+    });
   }
 
   isAdminOrUser(res) {
     if (res === true) {
       this.isAdmin = true;
-      console.log('value of admin', this.isAdmin)
-    }
-    else {
+    } else {
       this.isAdmin = false;
     }
   }
@@ -78,12 +76,10 @@ export class AllbooksComponent implements OnInit {
         }
         if (this.categories.length !== 0) {
           if (this.categories.includes(res.categories)) {
-          }
-          else {
+          } else {
             this.categories.push(res.categories);
           }
-        }
-        else {
+        } else {
           this.categories.push(res.categories);
         }
       });
@@ -144,6 +140,7 @@ export class AllbooksComponent implements OnInit {
       }
     });
   }
+
   openBookDialog() {
     const dialogRef = this.dialog.open(AddbookComponent, {
       width: '750px',
@@ -155,8 +152,18 @@ export class AllbooksComponent implements OnInit {
   }
 
   issueBook(bookId: number) {
-    console.log(this.auth.getCurrentUser());
-    this.book.issueBook(bookId);
+    this.book.checkBookIssued(bookId).subscribe(response => {
+      if (response === false) {
+        console.log('value of response', response);
+        this.book.issueBook(bookId);
+      } else {
+        Swal({
+          title: 'Cannot Re-issue this book',
+          text: 'Book Already issued',
+          type: 'warning'
+        });
+      }
+    });
     // this.booksService.checkBookIssued(bookId);
   }
 

@@ -41,12 +41,13 @@ import 'hammerjs';
 import { BooksService } from './services/books.service';
 import {MatRadioModule} from '@angular/material/radio';
 import { AddbookComponent } from './addbook/addbook.component';
-import swal from 'sweetalert'
+import swal from 'sweetalert';
 import { AuthGuardService } from './services/authGuard.service';
 import { BookEditComponent } from './book-edit/book-edit.component';
 import { UserEditComponent } from './user-edit/user-edit.component';
 import { ServiceWorkerModule } from '@angular/service-worker';
-import { userDetailService } from './services/userDetail.service';
+import { UserDetailService } from './services/userDetail.service';
+import { FooterComponent } from './footer/footer.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -60,6 +61,7 @@ import { userDetailService } from './services/userDetail.service';
     AddbookComponent,
     BookEditComponent,
     UserEditComponent,
+    FooterComponent,
   ],
   imports: [
     BrowserModule,
@@ -91,7 +93,7 @@ import { userDetailService } from './services/userDetail.service';
     MatRadioModule,
     MatSelectModule
   ],
-  providers: [AuthService , BooksService , AuthGuardService , userDetailService],
+  providers: [AuthService , BooksService , AuthGuardService , UserDetailService],
   entryComponents: [AddbookComponent , BookEditComponent],
   bootstrap: [AppComponent]
 })

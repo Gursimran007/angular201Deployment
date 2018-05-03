@@ -1,5 +1,5 @@
 <div class="col-md-12" style="display : flex;">
-  <div class="col-md-2" style="top: 2rem;">
+  <div class="col-md-2 col-xs-12" style="top: 2rem;">
     <div id="filter">
       <mat-expansion-panel [expanded]="true">
         <mat-expansion-panel-header>
@@ -18,12 +18,12 @@
         <button mat-raised-button color="primary" style="width: 100%" (click)="clearFilter()">Clear</button>
       </div>
       <div>
-        <button mat-raised-button color="primary" style="width: 100%; margin-top: 10px;" (click)="openBookDialog()">Add Book</button>
+        <button *ngIf="isAdmin" mat-raised-button color="primary" style="width: 100%; margin-top: 10px;" (click)="openBookDialog()">Add Book</button>
       </div>
     </div>
   </div>
-  <div class="col-md-9" *ngIf="(booksObservable |async) else contentLoading" id="cardsContainer">
-    <div *ngFor="let book of booksObservable |async ; let i = index " class="col-md-4" id="booksCard">
+  <div class="col-md-9 col-xs-12" *ngIf="(booksObservable |async) else contentLoading" id="cardsContainer">
+    <div *ngFor="let book of booksObservable |async ; let i = index " class="col-md-4 col-xs-10" id="booksCard">
       <mat-card>
         <img mat-card-image src={{book.imageLinks}} style="max-height : 230px ; padding : 12px" alt="book image">
         <div>

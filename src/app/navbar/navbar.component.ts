@@ -36,7 +36,6 @@ export class NavbarComponent implements OnInit {
   }
 
   goToUserProfile() {
-    console.log('contrl is coming on click of profile')
     this.router.navigate(['/userProfile']);
   }
 }

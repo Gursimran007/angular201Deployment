@@ -1,47 +1,46 @@
 import { Injectable } from '@angular/core';
 import { UserProfile } from '../user-profile/user-profile.modal';
 
-const USER_KEY="user";
+const USER_KEY = 'user';
 
 @Injectable()
-export class userDetailService {
+export class UserDetailService {
 
   constructor() { }
 
-  addToLocalStorage(key,value){
-    localStorage.setItem(key,value);
+  addToLocalStorage(key, value) {
+    localStorage.setItem(key, value);
   }
 
-  getStoredItem(key):any{
+  getStoredItem(key): any {
     return localStorage.getItem(key);
   }
 
-  removeStoredItem(key){
+  removeStoredItem(key) {
     localStorage.removeItem(key);
   }
 
-  storeUserObject(userObject:{}){
-    this.addToLocalStorage(USER_KEY,JSON.stringify(userObject));
+  storeUserObject(userObject: {}) {
+    this.addToLocalStorage(USER_KEY, JSON.stringify(userObject));
   }
 
-  getUserObject():UserProfile{
-    var userString=this.getStoredItem(USER_KEY);
-    if(userString==null || userString=='undefined'){
+  getUserObject(): UserProfile {
+    const userString = this.getStoredItem(USER_KEY);
+    if (userString == null || userString === 'undefined') {
       return null;
     }
-     return new UserProfile(JSON.parse(this.getStoredItem(USER_KEY)));
+    return new UserProfile(JSON.parse(this.getStoredItem(USER_KEY)));
   }
 
-  removeStoredUser(){
+  removeStoredUser() {
     this.removeStoredItem(USER_KEY);
   }
 
-  isUserLoggedIn():boolean{
-    if(this.getUserObject()==null){
+  isUserLoggedIn(): boolean {
+    if (this.getUserObject() == null) {
       return false;
-    }
-    else{
+    } else {
       return true;
     }
   }
-} 
+}

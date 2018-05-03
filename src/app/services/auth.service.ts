@@ -6,14 +6,12 @@ import { Observable } from 'rxjs/Observable';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { AngularFireDatabase } from 'angularfire2/database';
 import { UserProfile } from '../user-profile/user-profile.modal';
-import Swal from 'sweetalert2'
-import { userDetailService } from './userDetail.service';
+import Swal from 'sweetalert2';
+import { UserDetailService } from './userDetail.service';
 // import * as _swal from 'sweetalert';
 // import { SweetAlert } from 'sweetalert/typings/core';
 // const swal: SweetAlert = _swal as any;
 
-const isAuthorized = "isUserAuthorized";
-const isLoggedIn = "isUserLoggedIn";
 
 @Injectable()
 export class AuthService implements OnInit {
@@ -28,7 +26,7 @@ export class AuthService implements OnInit {
   admin = new BehaviorSubject<Boolean>(false);
 
   constructor(private _firebaseAuth: AngularFireAuth, private database: AngularFireDatabase, private router: Router,
-    private userDetail: userDetailService) {
+    private userDetail: UserDetailService) {
     this._firebaseAuth.authState.subscribe(response => {
       this.authState = response;
     });
@@ -38,23 +36,23 @@ export class AuthService implements OnInit {
     this.user = this.authState;
     this.isUserLoggedIn.subscribe(res => {
       this.isLoggedIn();
-    })
+    });
   }
 
   signInWithGoogle() {
     this._firebaseAuth.auth.signInWithPopup(
       new firebase.auth.GoogleAuthProvider()
     ).then(response => {
-      this.isLoggedInNormal(this._firebaseAuth.authState)
+      this.isLoggedInNormal(this._firebaseAuth.authState);
       this.router.navigate(['/library']);
     }).catch(error => {
       this.isUserLoggedIn.next(false);
       Swal({
-        title: "Error",
-        text: "No Google account found for these credentials",
+        title: 'Error',
+        text: 'No Google account found for these credentials',
         type: 'warning'
       });
-      this.router.navigate(['/login'])
+      this.router.navigate(['/login']);
     });
     this.CurrentUserAuth();
   }
@@ -68,8 +66,7 @@ export class AuthService implements OnInit {
     this.isUserLoggedIn.subscribe(res => {
       if (res === true) {
         return true;
-      }
-      else {
+      } else {
         return false;
       }
     });
@@ -111,11 +108,9 @@ export class AuthService implements OnInit {
         if (res.length !== 0) {
           this.allUsers = res;
           this.allUsers.map(data => {
-          
             if (data.username.toLowerCase() === 'gursimran' && data.password.toLowerCase() === 'anmol_4501') {
               this.admin.next(true);
-            }
-            else {
+            }else {
               this.admin.next(false);
             }
 
@@ -126,8 +121,8 @@ export class AuthService implements OnInit {
               return;
             } else {
               Swal({
-                title: "Password error",
-                text: "Password is incorrect!",
+                title: 'Password error',
+                text: 'Password is incorrect!',
                 type: 'warning'
               });
               return false;
@@ -135,8 +130,8 @@ export class AuthService implements OnInit {
           });
         } else {
           Swal({
-            title: "User did not found",
-            text: "No user found with this username"
+            title: 'User did not found',
+            text: 'No user found with this username'
           });
         }
       });
@@ -145,13 +140,9 @@ export class AuthService implements OnInit {
   logout() {
     this.isUserLoggedIn.next(false);
     this.admin.next(false);
-    this.userDetail.addToLocalStorage(isAuthorized, this.isUserAuthorized.value.toString())
-    this.userDetail.addToLocalStorage(isLoggedIn, this.isUserLoggedIn.value.toString())
     this._firebaseAuth.auth.signOut()
       .then((res) => this.router.navigate(['/']));
   }
-
-  
 
   getAuthenticated(): boolean {
     return this.authState !== null;
