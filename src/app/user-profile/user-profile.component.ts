@@ -11,7 +11,8 @@ export class UserProfileComponent implements OnInit {
   users;
   profilePic;
   defaultProfilePic = '../../assets/images/defaultMenAvatar.png';
-  isAuthPicAvailable  = new BehaviorSubject<Boolean>(false);
+  // isAuthPicAvailable  = new BehaviorSubject<Boolean>(false);
+  isAuthPicAvailable: Boolean = false;
   constructor( private auth: AuthService) { }
 
   ngOnInit() {
@@ -22,11 +23,9 @@ export class UserProfileComponent implements OnInit {
 
   userDetails(User) {
     this.users = User;
-    console.log('response of user' , User);
     this.users.map(res => {
-      console.log('response coming ' , res);
       this.profilePic = res.profilePic;
-      this.isAuthPicAvailable.next(true);
+      this.isAuthPicAvailable = true;
     });
   }
 }

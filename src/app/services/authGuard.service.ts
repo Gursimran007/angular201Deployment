@@ -8,8 +8,8 @@ export class AuthGuardService implements CanActivate {
     canActivate() {
       this.authService.isUserLoggedIn.subscribe(res => {
         this.response = res;
-      })
-        if ( this.response.toString() === "true") {
+      });
+        if ( this.response.toString() === 'true') {
             return true;
         }
         this.router.navigate(['/']);

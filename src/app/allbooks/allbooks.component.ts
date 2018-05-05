@@ -28,6 +28,7 @@ export class AllbooksComponent implements OnInit {
   filterCategories = [];
   emptyCategory: Boolean = false;
   isAdmin: Boolean = false;
+  liked: Boolean = false;
   @ViewChildren('check') categoryIdentifier;
   constructor(private book: BooksService, fb: FormBuilder, private router: Router, public dialog: MatDialog, private auth: AuthService) {
     this.options = fb.group({
@@ -151,24 +152,45 @@ export class AllbooksComponent implements OnInit {
     });
   }
 
+  likeBook(bookId) {
+    this.liked = true;
+    this.book.likeBook(bookId);
+  }
+
+  // unLikeBook(bookId) {
+  //   this.liked = false;
+  // }
+
   issueBook(bookId: number) {
-    this.book.checkBookIssued(bookId).subscribe(response => {
-      if (response === false) {
-        console.log('value of response', response);
-        this.book.issueBook(bookId);
-      } else {
-        Swal({
-          title: 'Cannot Re-issue this book',
-          text: 'Book Already issued',
-          type: 'warning'
-        });
-      }
-    });
+    let result;
+    this.book.addIssuedBookArray();
+    result = this.book.checkBookIssued(bookId);
+    if (result === true) {
+      this.book.issueBook(bookId);
+      Swal({
+        title: 'Issued!',
+        text: 'Book issued successfully',
+        type: 'success'
+      });
+    } else {
+      Swal({
+        title: 'Cannot Re-issue this book',
+        text: 'Return the book first',
+        type: 'error',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        confirmButtonText: 'Return',
+        cancelButtonText: 'cancel!',
+      }).then((res) => {
+        if (res.value) {
+          this.returnBook(bookId);
+        }
+      });
+    }
     // this.booksService.checkBookIssued(bookId);
   }
 
   returnBook(bookId: number) {
-    // this.book.returnBook(bookId);
-    // this.book.checkBookIssued(bookId);
+    this.book.returnBook(bookId);
   }
 }

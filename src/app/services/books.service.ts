@@ -1,4 +1,4 @@
-import { Injectable, Inject } from '@angular/core';
+import { Injectable, Inject, OnInit } from '@angular/core';
 import { AngularFireDatabase } from 'angularfire2/database';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/map';
@@ -13,7 +13,7 @@ import { AuthService } from './auth.service';
 import { IssuedBookDetails } from './issuedBookDetails.modal';
 import { AddbookComponent } from '../addbook/addbook.component';
 @Injectable()
-export class BooksService {
+export class BooksService  {
 
   searchValue = new BehaviorSubject<string>('');
   books: Observable<any>;
@@ -22,8 +22,15 @@ export class BooksService {
   newBook = new BehaviorSubject<Book>(null);
   newId: string;
   isIssued = new BehaviorSubject<boolean>(false);
+  issuedBooksArray = [];
   constructor(private db: AngularFireDatabase, private http: Http, private router: Router,
-    private auth: AuthService) { }
+    private auth: AuthService) {
+      // this.addIssuedBookArray();
+      this.db.list<IssuedBookDetails>('/BooksIssued/', ref => ref.orderByChild('userId')
+      .equalTo(this.auth.userID)).valueChanges().subscribe(response => {
+        this.issuedBooksArray = response;
+      });
+    }
 
   getAllBooks() {
     this.books = this.db.list<Book>('/getBooks').valueChanges();
@@ -65,7 +72,7 @@ export class BooksService {
     //     check = true;
     //   }
     // });
-    for (let i = 0 ; i <  this.booksArray.length ; i++) {
+    for (let i = 0; i < this.booksArray.length; i++) {
       if (this.booksArray[i].ISBN === book.ISBN) {
         check = true;
       } else {
@@ -75,6 +82,24 @@ export class BooksService {
     }
     return check;
   }
+
+  likeBook(bookId: number) {
+    let booksearched;
+    let likes;
+    this.booksArray.filter(book => {
+      if (book.ISBN === bookId) {
+        booksearched = book;
+        likes = book.likes;
+      }
+    });
+    this.db.object<Book>('/getBooks/' + bookId).update({
+      likes: likes + 1,
+    });
+  }
+
+  // pushUserRecord() {
+  //   console.log(this.auth.af.auth.currentUser.uid);
+  // }
 
   addBook(book) {
     this.db.database.ref('/getBooks').child(book.ISBN).set(book).
@@ -132,22 +157,19 @@ export class BooksService {
     let issueNumber: number;
     let copiesCount: number;
     this.booksArray.filter(book => {
-      if (book.id === bookid) {
+      if (book.ISBN === bookid) {
         booksearched = book;
         issueNumber = book.issued;
         copiesCount = book.copies;
       }
     });
-    // this.db.object<Book>("/getBooks/" + bookid).update({
-    //   issued: issueNumber + 1,
-    //   copies: copiesCount - 1
-    // })
-    this.db.object<Book>('/getBooks/' + bookid).snapshotChanges().subscribe(response => {
-      console.log('in snapshot changes', response);
+    this.db.object<Book>('/getBooks/' + bookid).update({
+      issued: issueNumber + 1,
+      copies: copiesCount - 1
     });
 
     const issueBook = {
-      'userId': this.auth.userID, 'bookId': booksearched.id.toString(),
+      'userId': this.auth.userID, 'bookId': booksearched.ISBN.toString(),
       'bookName': booksearched.title.toString(), 'userName': this.auth.getName()
     };
     const ref = this.db.database.ref('/BooksIssued').push(issueBook);
@@ -158,18 +180,28 @@ export class BooksService {
     // console.log(this.issued);
   }
 
-  checkBookIssued(bookId: number): Observable<any> {
-    const result = new BehaviorSubject<boolean>(false);
-    const books = this.db.list<IssuedBookDetails>('/IssuedBooks/', ref => ref.orderByChild('userId')
-      .equalTo(this.auth.userID)).valueChanges();
-    books.subscribe(book => {
-      for (const bk of book) {
-        console.log(bk.id, bookId);
-        if (bk.bookId === bookId) {
-          result.next(true);
+  addIssuedBookArray() {
+    this.db.list<IssuedBookDetails>('/BooksIssued/', ref => ref.orderByChild('userId')
+      .equalTo(this.auth.userID)).valueChanges().subscribe(response => {
+        this.issuedBooksArray = response;
+      });
+  }
+
+  checkBookIssued(bookId: number) {
+    this.addIssuedBookArray();
+    let result: Boolean = true;
+      if (this.issuedBooksArray.length === 0) {
+        result = true;
+      } else {
+        for (let bk = 0; bk < this.issuedBooksArray.length; bk++) {
+          console.log(this.issuedBooksArray[bk].bookId, bookId);
+          if (this.issuedBooksArray[bk].bookId === bookId.toString()) {
+            console.log('it is coming inside if condition');
+            result = false;
+            break;
+          }
         }
       }
-    });
     return result;
   }
 
@@ -190,30 +222,33 @@ export class BooksService {
     let copiesCount: number;
 
     this.booksArray.filter(book => {
-      if (book.id === bookId) {
+      if (book.ISBN === bookId) {
         booksearched = book;
         issueNumber = book.issued;
         copiesCount = book.copies;
       }
     });
 
-    this.db.object<Book>('/Books/' + bookId).update({
+    this.db.object<Book>('/getBooks/' + bookId).update({
       issued: issueNumber - 1,
       copies: copiesCount + 1
     });
 
-    const issuedBooksDetails = this.db.list<IssuedBookDetails>('/IssuedBooks', ref => ref.orderByChild('bookId')).valueChanges();
+    const issuedBooksDetails = this.db.list<IssuedBookDetails>('/BooksIssued', ref => ref.orderByChild('bookId')).valueChanges();
     issuedBooksDetails.subscribe(
       bookDetails => {
         for (const book of bookDetails) {
-          if (book.bookId === bookId && book.userId === this.auth.getCurrentUserId()) {
-            console.log(book);
-            console.log(this.auth.getCurrentUserId());
-            this.db.object<IssuedBookDetails>('/IssuedBooks/' + book.id).remove();
+          if (book.bookId === bookId && book.userId === this.auth.userID) {
+            this.db.object<IssuedBookDetails>('/BooksIssued/' + book.id).remove();
           }
         }
       }
     );
+    Swal({
+      title: 'Returned!',
+      text: 'Book returned successfully',
+      type: 'success'
+    });
   }
 
   getTodaysDate() {
@@ -225,12 +260,3 @@ export class BooksService {
   }
 }
 
-/*// for (let i = 0; i < responseJson['items'].length; i++) {
-      //   console.log(responseJson['items'][i].volumeInfo.title);
-      //   console.log(responseJson['items'][i].volumeInfo.authors);
-      //   console.log(responseJson['items'][i].volumeInfo.imageLinks.thumbnail);
-      //   books = new book(null, responseJson['items'][i].volumeInfo.title, responseJson['items'][i].volumeInfo.authors[0], 0,
-      //     responseJson['items'][i].volumeInfo.imageLinks.thumbnail, 10, responseJson['items'][i].volumeInfo.category,
-      //     responseJson['items'][i].volumeInfo.rating);
-      //   this.book.next(books);
-      // }  */

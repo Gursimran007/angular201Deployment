@@ -12,12 +12,15 @@
         <div class="col-lg-7">
           <div style="height: 280px">
             <span class="labelForDescription">Description</span>
-            <div id="description">{{book.description | slice:0:500}}</div>
+            <div id="description">{{book.description | slice:0:600}}</div>
           </div>
           <div style="display: flex; justify-content: center">
             <div>
-              <button class="bookDetailButtons"*ngIf="!isAdmin" mat-raised-button color="accent">Issue</button>
+              <button class="bookDetailButtons"*ngIf="!isAdmin" mat-raised-button color="accent" (click)="issueBook(book.ISBN)">Issue</button>
             </div>
+            <div>
+                <button class="bookDetailButtons"*ngIf="!isAdmin" mat-raised-button color="accent" (click)="returnBook(book.ISBN)">Return</button>
+              </div>
             <div>
               <button class="bookDetailButtons" *ngIf="isAdmin" mat-raised-button color="primary" (click)="openEditDialog()"><i class="material-icons">edit</i></button>
             </div>
