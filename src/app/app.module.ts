@@ -67,7 +67,6 @@ import { FooterComponent } from './footer/footer.component';
     ReactiveFormsModule,
     // BrowserAnimationsModule,
     NoopAnimationsModule,
-    HttpModule,
     HttpClientModule,
     AngularFireModule.initializeApp(environment.firebase, 'angular-auth-firebase'),
     environment.production ? ServiceWorkerModule.register('/ngsw-worker.js') : [],
