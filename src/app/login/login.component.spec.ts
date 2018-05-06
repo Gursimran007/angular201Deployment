@@ -43,7 +43,7 @@ it('from should be valid' , async(() => {
   expect(component.LoginForm.valid).toBeTruthy();
 })
 );
-
+// checks for email and password
 it('should have one user' , async(() => {
   expect(component.user.email);
   expect(component.user.password);
