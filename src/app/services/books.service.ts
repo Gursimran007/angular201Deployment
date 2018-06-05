@@ -5,6 +5,7 @@ import 'rxjs/add/operator/map';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Book } from '../book-details/book.modal';
 import { HttpModule, Http } from '@angular/http';
+import { HttpClient } from '@angular/common/http';
 import Swal from 'sweetalert2';
 import { Router } from '@angular/router';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
@@ -23,7 +24,8 @@ export class BooksService  {
   newId: string;
   isIssued = new BehaviorSubject<boolean>(false);
   issuedBooksArray = [];
-  constructor(private db: AngularFireDatabase, private http: Http, private router: Router,
+  responseJson: any;
+  constructor(private db: AngularFireDatabase, private http: HttpClient, private router: Router,
     private auth: AuthService) {
       // this.addIssuedBookArray();
       this.db.list<IssuedBookDetails>('/BooksIssued/', ref => ref.orderByChild('userId')
@@ -46,15 +48,16 @@ export class BooksService  {
 
   serachBookByISBN(isbn): Observable<Book> {
     this.http.get('https://www.googleapis.com/books/v1/volumes/?q=isbn:' + isbn).subscribe((response) => {
-      let responseJson = response.json();
+      this.responseJson = response;
+      console.log(this.responseJson.items);
       // console.log('lets see when parsing the data in string how it comes' , JSON.parse( JSON.stringify(responseJson )));
-      responseJson = JSON.parse(JSON.stringify(responseJson));
+      this.responseJson = JSON.parse(JSON.stringify(this.responseJson));
       // JSON.parse(replaceAll(JSON.stringify(val),"undefined","null"));
-      for (let i = 0; i < responseJson['items'].length; i++) {
-        this.newBook.next(new Book(isbn, responseJson.items[i].volumeInfo.authors[0],
-          responseJson.items[i].volumeInfo.categories[i], 1,
-          responseJson.items[i].volumeInfo.description, responseJson.items[i].id,
-          responseJson.items[i].volumeInfo.imageLinks.thumbnail, 0, 2, responseJson.items[i].volumeInfo.title));
+      for (let i = 0; i < this.responseJson['items'].length; i++) {
+        this.newBook.next(new Book(isbn, this.responseJson.items[i].volumeInfo.authors[0],
+          this.responseJson.items[i].volumeInfo.categories[i], 1,
+          this.responseJson.items[i].volumeInfo.description, this.responseJson.items[i].id,
+          this.responseJson.items[i].volumeInfo.imageLinks.thumbnail, 0, 2, this.responseJson.items[i].volumeInfo.title));
       }
     });
 
@@ -65,13 +68,6 @@ export class BooksService  {
 
   checkIfBookAlreadyPresent(book) {
     let check: Boolean = true;
-    // this.booksArray.map(res => {
-    //   if (res.ISBN === book.ISBN) {
-    //     check = false;
-    //   } else {
-    //     check = true;
-    //   }
-    // });
     for (let i = 0; i < this.booksArray.length; i++) {
       if (this.booksArray[i].ISBN === book.ISBN) {
         check = true;

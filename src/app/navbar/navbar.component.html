@@ -17,7 +17,7 @@
             </li>
           </ul>
           <div id="searchElement" class="mr-2">
-            <input id="search" #searchElement placeholder="Search" (keyup.enter)="searchKeyword(searchElement.value)">
+            <input id="search" #searchElement placeholder="Search" (keyup)="searchKeyword(searchElement)">
             <div id="searchMaterialIcon">
               <i class="material-icons md-26" id="serachIcon" (click)="searchKeyword(searchElement)">search</i>
             </div>

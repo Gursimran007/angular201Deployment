@@ -90,7 +90,7 @@ import { FooterComponent } from './footer/footer.component';
     MatSelectModule
   ],
   providers: [AuthService , BooksService , AuthGuardService , UserDetailService],
-  entryComponents: [AddbookComponent , BookEditComponent],
+  entryComponents: [AppComponent , AddbookComponent , BookEditComponent],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

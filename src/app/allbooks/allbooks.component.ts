@@ -63,7 +63,11 @@ export class AllbooksComponent implements OnInit {
     } else {
       this.booksObservable = this.booksObservable.map(books => {
         return books.filter(book => {
-          return book.title.toLowerCase().includes(value.toLowerCase());
+          if (book.title.toLowerCase().includes(value.toLowerCase()) ||
+          book.categories.toLowerCase().includes(value.toLowerCase()) ||
+           book.authors.toLowerCase().includes(value.toLowerCase())) {
+            return book;
+          }
         });
       });
     }
@@ -191,6 +195,25 @@ export class AllbooksComponent implements OnInit {
   }
 
   returnBook(bookId: number) {
-    this.book.returnBook(bookId);
+    let result;
+    result = this.book.checkBookIssued(bookId);
+    console.log(result);
+    if (result === false) {
+      this.book.returnBook(bookId);
+    }else {
+      Swal({
+        title: 'Cannot Return this book',
+        text: 'Issue the book first',
+        type: 'error',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        confirmButtonText: 'Return',
+        cancelButtonText: 'cancel!',
+      }).then((res) => {
+        if (res.value) {
+          this.returnBook(bookId);
+        }
+      });
+    }
   }
 }

@@ -7,10 +7,9 @@ import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { AngularFireDatabase } from 'angularfire2/database';
 import { UserProfile } from '../user-profile/user-profile.modal';
 import Swal from 'sweetalert2';
+import { HttpClient } from '@angular/common/http';
 import { UserDetailService } from './userDetail.service';
-// import * as _swal from 'sweetalert';
-// import { SweetAlert } from 'sweetalert/typings/core';
-// const swal: SweetAlert = _swal as any;
+
 
 
 @Injectable()
