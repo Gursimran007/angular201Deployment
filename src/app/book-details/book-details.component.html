@@ -10,22 +10,34 @@
             <span class="labelForDescription">Title: </span>{{book.title}}</Header>
         </div>
         <div class="col-lg-7">
+          <div style="float: right;">
+            <button class="bookDetailButtons" *ngIf="isAdmin" mat-button color="primary" (click)="closeDialog()">
+              <i class="material-icons">close</i>
+            </button>
+          </div>
           <div style="height: 280px">
             <span class="labelForDescription">Description</span>
-            <div id="description">{{book.description | slice:0:600}}</div>
+            <div id="description">{{book.description | slice:0:550}}</div>
           </div>
-          <div style="display: flex; justify-content: center">
-            <div>
-              <button class="bookDetailButtons"*ngIf="!isAdmin" mat-raised-button color="accent" (click)="issueBook(book.ISBN)">Issue</button>
+          <div style="display: flex; float: right; margin-top:40px">
+            <!-- <div>
+              <button class="bookDetailButtons" *ngIf="!isAdmin && !book.taken" mat-raised-button color="accent" (click)="issueBook(book.ISBN)">Issue</button>
             </div>
             <div>
-                <button class="bookDetailButtons"*ngIf="!isAdmin" mat-raised-button color="accent" (click)="returnBook(book.ISBN)">Return</button>
+              <button class="bookDetailButtons" *ngIf="!isAdmin && book.taken" mat-raised-button color="warn" (click)="returnBook(book.ISBN)">Return</button>
+            </div> -->
+            <div>
+              <button class="bookDetailButtons" *ngIf="isAdmin" mat-raised-button color="primary" (click)="openEditDialog()">
+                <i class="material-icons">edit</i>
+              </button>
+            </div>
+            <div>
+              <button class="bookDetailButtons" *ngIf="isAdmin" mat-raised-button color="warn" (click)="deleteBook(book.ISBN)">
+                <i class="material-icons">delete</i>
+              </button>
+              <div>
+                <button mat-raised-button color="warn" *ngIf="!isAdmin" (click)="closeDialog()">Close</button>
               </div>
-            <div>
-              <button class="bookDetailButtons" *ngIf="isAdmin" mat-raised-button color="primary" (click)="openEditDialog()"><i class="material-icons">edit</i></button>
-            </div>
-            <div>
-              <button class="bookDetailButtons" *ngIf="isAdmin" mat-raised-button color="warn" (click)="deleteBook(book.ISBN)"><i class="material-icons">delete</i></button>
               <!-- <div id="deleteBook"><i class="material-icons">delete</i></div> -->
               <!-- <button><i class="material-icons">delete</i></button> -->
             </div>

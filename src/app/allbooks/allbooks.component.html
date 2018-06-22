@@ -1,62 +1,61 @@
 <div class="container-fluid">
   <div class="row">
-    <div class="col-lg-12 col-md-12" style="display : flex; top: 2rem;">
-      <div class="col-lg-2 col-md-2 col-sm-6 col-xs-12" style="width:300px; min-width: 290px;">
-        <div id="filter">
-          <div>
-            <mat-expansion-panel [expanded]="true">
-              <mat-expansion-panel-header>
-                <mat-panel-title>
-                  Categories
-                </mat-panel-title>
-              </mat-expansion-panel-header>
-              <div *ngIf="emptyCategory">
-                No categories found..
-              </div>
-              <div *ngFor="let category of categories">
-                <mat-checkbox class="example-margin" value={{category}} #check (change)="filterBooks($event , check.value)" color='primary'>{{category}}</mat-checkbox>
-              </div>
-            </mat-expansion-panel>
-            <div id="filterAction">
+    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" style="display : flex; top: 2rem; flex-wrap: wrap">
+      <!-- <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2" style="width:300px; min-width: 290px;"> -->
+      <div id="filter" class="col-xs-12 col-sm-12 col-md-3 col-lg-3">
+        <div>
+          <mat-expansion-panel [expanded]="true">
+            <mat-expansion-panel-header>
+              <mat-panel-title>
+                Categories
+              </mat-panel-title>
+            </mat-expansion-panel-header>
+            <div *ngIf="emptyCategory">
+              No categories found..
+            </div>
+            <div *ngFor="let category of categories">
+              <mat-checkbox class="example-margin" value={{category}} #check (change)="filterBooks($event , check.value)" color='primary'>{{category}}</mat-checkbox>
+            </div>
+          </mat-expansion-panel>
+          <!-- <div id="filterAction">
               <button mat-raised-button color="primary" style="width: 100%" (click)="clearFilter()">Clear</button>
-            </div>
-            <div>
-              <button *ngIf="isAdmin" mat-raised-button color="primary" style="width: 100%; margin-top: 10px;" (click)="openBookDialog()">Add Book</button>
-            </div>
+            </div> -->
+          <div>
+            <button *ngIf="isAdmin" mat-raised-button color="primary" style="width: 100%; margin-top: 10px;" (click)="openBookDialog()">Add Book</button>
           </div>
         </div>
       </div>
-      <div class="col-xs-12 col-sm-12 col-md-9 col-lg-9" style="margin: 0 auto">
-        <div  *ngIf="(booksObservable |async) else contentLoading" id="cardsContainer">
-          <div *ngFor="let book of booksObservable |async ; let i = index " class="col-xs-6 col-sm-6 col-md-4" id="booksCard">
-            <mat-card class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-              <img mat-card-image src={{book.imageLinks}} style="max-height : 230px ; padding : 12px" alt="book image">
+      <div id="cardsContainer" class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
+        <div *ngFor="let book of booksArray ; let i = index " class="col-xs-6 col-sm-6 col-md-4" id="booksCard">
+          <mat-card class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+            <img mat-card-image src={{book.imageLinks}} style="max-height : 230px ; padding : 12px" alt="book image">
+            <div>
+              <mat-card-header style="margin: 0 !important">
+                <mat-card-title style="font-weight: bold ; height: 45px;">{{book.title}}</mat-card-title>
+                <mat-card-subtitle>{{book.categories}}</mat-card-subtitle>
+              </mat-card-header>
               <div>
-                <mat-card-header style="margin: 0 !important">
-                  <mat-card-title style="font-weight: bold ; height: 45px;">{{book.title}}</mat-card-title>
-                  <mat-card-subtitle>{{book.categories}}</mat-card-subtitle>
-                </mat-card-header>
-                <div>
-                  {{book.authors}}
-                </div>
+                {{book.authors}}
               </div>
-              <mat-card-actions>
-                <button *ngIf="!isAdmin" mat-raised-button class="knowMore" color="accent" (click)="issueBook(book.ISBN)">Issue</button>
-                <button mat-raised-button color="primary" class="knowMore" (click)="likeBook(book.ISBN)">{{book.likes}}
-                  <i class="material-icons">thumb_up</i>
-                </button>
-                <!-- <button mat-raised-button color="primary" *ngIf="liked" class="knowMore" (click)="unLikeBook(book.ISBN)">
+            </div>
+            <mat-card-actions>
+              <button *ngIf="!isAdmin && !book.taken" mat-raised-button class="knowMore" color="accent" (click)="issueBook(book.ISBN , i)">Issue</button>
+              <button *ngIf="!isAdmin && book.taken" mat-raised-button class="knowMore" color="warn" (click)="returnBook(book.ISBN)">Return</button>
+              <button mat-raised-button color="primary" *ngIf="!isAdmin" class="knowMore" (click)="likeBook(book.ISBN)">{{book.likes}}
+                <i class="material-icons">thumb_up</i>
+              </button>
+              <!-- <button mat-raised-button color="primary" *ngIf="!isAdmin && book.liked" class="knowMore" (click)="unLikeBook(book.ISBN)">
               <i class="material-icons">done</i>Liked
             </button> -->
-                <button mat-raised-button color="primary" class="knowMore" (click)="openDialog(book)">Know more</button>
-                <!-- <button mat-raised-button color="warn">Delete</button> -->
-              </mat-card-actions>
-            </mat-card>
-          </div>
+              <button mat-raised-button color="primary" class="knowMore" (click)="openDialog(book)">Know more</button>
+              <!-- <button mat-raised-button color="warn">Delete</button> -->
+            </mat-card-actions>
+          </mat-card>
         </div>
       </div>
     </div>
   </div>
+  <!-- </div> -->
 </div>
 <ng-template #contentLoading>
   <mat-spinner style="margin: 10rem auto"></mat-spinner>

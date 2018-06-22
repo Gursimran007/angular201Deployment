@@ -1,18 +1,27 @@
 <div class="container">
   <div class="row">
     <div class="col-lg-12">
-      <div class="row"  style="justify-content: center">
-        <img  *ngIf="isAuthPicAvailable" [src]="profilePic" class="profileImage">
-        <img  *ngIf="!isAuthPicAvailable" src="../../assets/images/defaultMenAvatar.png" class="profileImage">
+      <div class="row" style="justify-content: center">
+        <img src="{{profilePic}}" class="profileImage">
       </div>
-      <!-- <div *ngIf="!isAuthPicAvailable" class="row" style="justify-content: center">
-        <img src="../../assets/images/defaultMenAvatar.png" class="profileImage">
-      </div> -->
-    </div>
-    <div class="row">
-      <div *ngFor="let user of users">
-        <div>{{user.username}}</div>
-        <div>{{user.email}}</div>
+      <div class="row" style="justify-content: center">
+        <div class="col-lg-12" *ngFor="let user of users" style="text-align: center">
+          <div>{{user.username}}</div>
+          <div>{{user.email}}</div>
+        </div>
+        <!-- <div>Books Issued</div> -->
+        <div class="col-lg-7" *ngFor="let books of booksIssued">
+          <div style="display: flex;">
+            <div mat-card-avatar class="avatar"></div>
+            <h6>{{books.bookName}}</h6>
+            <div style="display: flex;">
+              Issue Date :
+              <h6>{{books.issueDate}}</h6>
+              Return Date :
+              <h5>{{books.returnDate}}</h5>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>

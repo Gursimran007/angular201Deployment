@@ -8,12 +8,11 @@ import { AngularFireDatabase } from 'angularfire2/database';
 import { UserProfile } from '../user-profile/user-profile.modal';
 import Swal from 'sweetalert2';
 import { HttpClient } from '@angular/common/http';
-import { UserDetailService } from './userDetail.service';
-
 
 
 @Injectable()
 export class AuthService implements OnInit {
+
   private user: Observable<firebase.User>;
   private userDetails = new BehaviorSubject<any>(null);
   private authState: any = null;
@@ -24,8 +23,7 @@ export class AuthService implements OnInit {
   userID: any;
   admin = new BehaviorSubject<Boolean>(false);
 
-  constructor(private _firebaseAuth: AngularFireAuth, private database: AngularFireDatabase, private router: Router,
-    private userDetail: UserDetailService) {
+  constructor(private _firebaseAuth: AngularFireAuth, private database: AngularFireDatabase, private router: Router) {
     this._firebaseAuth.authState.subscribe(response => {
       this.authState = response;
     });
@@ -43,17 +41,18 @@ export class AuthService implements OnInit {
       new firebase.auth.GoogleAuthProvider()
     ).then(response => {
       this.isLoggedInNormal(this._firebaseAuth.authState);
+      this.CurrentUserAuth();
       this.router.navigate(['/library']);
     }).catch(error => {
       this.isUserLoggedIn.next(false);
       Swal({
         title: 'Error',
-        text: 'No Google account found for these credentials',
+        text: 'slow Connection please try again.',
         type: 'warning'
       });
-      this.router.navigate(['/login']);
+      this.isUserLoggedIn.next(false);
+      // this.router.navigate(['/login']);
     });
-    this.CurrentUserAuth();
   }
 
   signInRegular(email, password) {
@@ -61,87 +60,6 @@ export class AuthService implements OnInit {
     return this._firebaseAuth.auth.createUserWithEmailAndPassword(email, password);
   }
 
-  isLoggedIn() {
-    this.isUserLoggedIn.subscribe(res => {
-      if (res === true) {
-        return true;
-      } else {
-        return false;
-      }
-    });
-  }
-
-  isLoggedInNormal(User): Observable<any> {
-    if (User.subscribe) {
-      User.subscribe(
-        (user) => {
-          this.userID = user.uid;
-          if (user) {
-            this.isUserLoggedIn.next(true);
-          } else {
-            this.isUserLoggedIn.next(false);
-          }
-        }
-      );
-    } else {
-      this.userID = User.id;
-      if ((User.username !== null || User.username !== '') && (User.password !== null || User.password !== '')) {
-        this.isUserLoggedIn.next(true);
-      } else {
-        this.isUserLoggedIn.next(false);
-      }
-    }
-    return this.isUserLoggedIn;
-  }
-
-  // isLoggedInAuth(user) {
-  //   console.log('value of  user in auth login fun', user);
-  //   if (user !== null) {
-  //     this.isUserLoggedIn.next(true);
-  //   }
-  // }
-
-  login(username, password) {
-    this.database.list('/Users', ref => ref.orderByChild('username').equalTo(username))
-      .valueChanges().subscribe(res => {
-        if (res.length !== 0) {
-          this.allUsers = res;
-          this.allUsers.map(data => {
-            if (data.username.toLowerCase() === 'gursimran' && data.password.toLowerCase() === 'anmol_4501') {
-              this.admin.next(true);
-            }else {
-              this.admin.next(false);
-            }
-
-            if (data.password === password) {
-              this.isUserLoggedIn.next(true);
-              this.isLoggedInNormal(data);
-              this.router.navigate(['/library']);
-              return;
-            } else {
-              Swal({
-                title: 'Password error',
-                text: 'Password is incorrect!',
-                type: 'warning'
-              });
-              return false;
-            }
-          });
-        } else {
-          Swal({
-            title: 'User did not found',
-            text: 'No user found with this username'
-          });
-        }
-      });
-  }
-
-  logout() {
-    this.isUserLoggedIn.next(false);
-    this.admin.next(false);
-    this._firebaseAuth.auth.signOut()
-      .then((res) => this.router.navigate(['/']));
-  }
 
   getAuthenticated(): boolean {
     return this.authState !== null;
@@ -195,6 +113,85 @@ export class AuthService implements OnInit {
   CurrentUserDetails() {
     return this.database.list<UserProfile>('/Users', ref => ref.orderByChild('id').equalTo(this.userID).limitToFirst(1)).valueChanges();
   }
+
+  isLoggedIn() {
+    this.isUserLoggedIn.subscribe(res => {
+      if (res === true) {
+        return true;
+      } else {
+        return false;
+      }
+    });
+  }
+
+  isLoggedInNormal(User): Observable<any> {
+    if (User.subscribe) {
+      User.subscribe(
+        (user) => {
+          this.userID = user.uid;
+          if (user) {
+            this.isUserLoggedIn.next(true);
+          } else {
+            this.isUserLoggedIn.next(false);
+          }
+        }
+      );
+    } else {
+      this.userID = User.id;
+      if ((User.username !== null || User.username !== '') && (User.password !== null || User.password !== '')) {
+        this.isUserLoggedIn.next(true);
+      } else {
+        this.isUserLoggedIn.next(false);
+      }
+    }
+    return this.isUserLoggedIn;
+  }
+
+
+  login(username, password) {
+    this.database.list('/Users', ref => ref.orderByChild('username').equalTo(username))
+      .valueChanges().subscribe(res => {
+        if (res.length !== 0) {
+          this.allUsers = res;
+          this.allUsers.map(data => {
+            if (data.username.toLowerCase() === 'admin' && data.password.toString() === 'admin') {
+              this.admin.next(true);
+              this.isUserLoggedIn.next(true);
+              this.isLoggedInNormal(data);
+              this.router.navigate(['/library']);
+            } else {
+              this.admin.next(false);
+              if (data.password === password) {
+                this.isUserLoggedIn.next(true);
+                this.isLoggedInNormal(data);
+                this.router.navigate(['/library']);
+                return;
+              } else {
+                Swal({
+                  title: 'Password error',
+                  text: 'Password is incorrect!',
+                  type: 'warning'
+                });
+                return false;
+              }
+            }
+          });
+        } else {
+          Swal({
+            title: 'User did not found',
+            text: 'Please Sign UP'
+          });
+        }
+      });
+  }
+
+  logout() {
+    this.isUserLoggedIn.next(false);
+    this.admin.next(false);
+    this._firebaseAuth.auth.signOut()
+      .then((res) => this.router.navigate(['/']));
+  }
+
 
 }
 

@@ -44,7 +44,7 @@ import { AuthGuardService } from './services/authGuard.service';
 import { BookEditComponent } from './book-edit/book-edit.component';
 import { UserEditComponent } from './user-edit/user-edit.component';
 import { ServiceWorkerModule } from '@angular/service-worker';
-import { UserDetailService } from './services/userDetail.service';
+import {MatButtonToggleModule} from '@angular/material/button-toggle';
 import { FooterComponent } from './footer/footer.component';
 @NgModule({
   declarations: [
@@ -87,9 +87,10 @@ import { FooterComponent } from './footer/footer.component';
     MatToolbarModule,
     MatMenuModule,
     MatRadioModule,
-    MatSelectModule
+    MatSelectModule,
+    MatButtonToggleModule
   ],
-  providers: [AuthService , BooksService , AuthGuardService , UserDetailService],
+  providers: [AuthService , BooksService , AuthGuardService],
   entryComponents: [AppComponent , AddbookComponent , BookEditComponent],
   bootstrap: [AppComponent]
 })

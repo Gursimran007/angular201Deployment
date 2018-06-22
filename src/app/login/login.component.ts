@@ -17,18 +17,28 @@ export class LoginComponent implements OnInit {
   LoginSrc = '../../assets/images/login-.png';
   avatarSrc = '../../assets/images/login-avatar.png';
   LoginForm: FormGroup;
+  validUsername: Boolean = true;
+  validPassword: Boolean = true;
   constructor(public authService: AuthService, private router: Router) { }
   ngOnInit() {
     this.LoginForm = new FormGroup({
-      'username': new FormControl(null, Validators.required),
-      'password': new FormControl(null, Validators.required)
+      'username': new FormControl(null),
+      'password': new FormControl(null)
     });
   }
 
   login() {
     const username = this.LoginForm.get('username').value;
     const password = this.LoginForm.get('password').value;
-    this.authService.login(username, password);
+    if (!this.LoginForm.get('username').valid && this.LoginForm.get('username').touched) {
+      this.validUsername = false;
+    }
+    if (!this.LoginForm.get('password').valid && this.LoginForm.get('password').touched) {
+      this.validPassword = false;
+    }
+    if (this.validUsername && this.validPassword) {
+      this.authService.login(username, password);
+    }
   }
 
   signInWithGoogle() {

@@ -2,6 +2,7 @@
     background-image : url('../../assets/images/login-.png');
     background-size : cover;
     height : -webkit-fill-available;
+    /* background-color: whitesmoke; */
 }
 .card-container{
     margin: 11rem auto;
@@ -17,4 +18,13 @@
 .form-action{
     margin-top: 15px;
     margin-bottom: 15px;
+}
+
+#signUp {
+    color:darkblue;
+}
+
+#signUp:hover {
+    color: brown;
+    text-decoration: none;
 }

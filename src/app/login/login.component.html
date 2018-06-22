@@ -1,7 +1,7 @@
 <div class="mainContainer">
   <div class="container">
     <div class="row">
-      <div class="card-container col-xs-12 col-sm-10 col-md-8 col-lg-4">
+      <div class="card-container col-xs-12 col-sm-8 col-md-8 col-lg-4">
         <mat-card class="matCard">
           <mat-card-header>
             <div mat-card-avatar class="avatar"></div>
@@ -12,11 +12,11 @@
             <form class="loginForm" [formGroup]="LoginForm">
               <mat-form-field class="full-width">
                 <input matInput id="username" formControlName="username" placeholder="username">
-                <mat-error *ngIf="!LoginForm.get('username').valid && LoginForm.get('username').touched">Please enter a valid username</mat-error>
+                <mat-error *ngIf="!validUsername">Please enter a valid username</mat-error>
               </mat-form-field>
               <mat-form-field class="full-width">
                 <input matInput id="password" formControlName="password" type="password" placeholder="password">
-                <mat-error *ngIf="!LoginForm.get('password').valid && LoginForm.get('password').touched" class="help-block">Password is not correct!</mat-error>
+                <mat-error *ngIf="!validPassword" class="help-block">Password is not correct!</mat-error>
               </mat-form-field>
               <div class="form-action">
                 <button mat-raised-button color="primary" (click)="login()">Login</button>
@@ -25,7 +25,7 @@
                   Login with Google
                 </button>
               </div>
-              <div id="signup">Not a member?<a routerLink="/signup" style="color :blue"> SIGN UP!</a></div>
+              <div id="signup">Not a member?<a routerLink="/signup" id="signUp"> SIGN UP!</a></div>
             </form>
           </mat-card-content>
         </mat-card>

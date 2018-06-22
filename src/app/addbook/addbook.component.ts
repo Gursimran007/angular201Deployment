@@ -35,28 +35,8 @@ export class AddbookComponent implements OnInit, AfterViewInit {
   }
 
   addBookByISBN(book) {
-    const check = this.bookService.checkIfBookAlreadyPresent(book);
-    if (check === true) {
-      this.bookService.addBook(book);
-    } else {
-      Swal({
-        title: 'Book already present!',
-        text: 'Do `you stil want to add?',
-        showCancelButton: true,
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33',
-        confirmButtonText: 'Yes',
-        cancelButtonText: 'No, cancel!',
-        confirmButtonClass: 'btn btn-success',
-        cancelButtonClass: 'btn btn-danger',
-        buttonsStyling: false,
-        reverseButtons: true
-      }).then((result) => {
-        if (result.value) {
-          this.bookService.addBook(book);
-        }
-      });
-    }
+    this.bookService.addBook(book);
     this.dialogRefClose.close();
   }
+
 }

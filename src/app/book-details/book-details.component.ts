@@ -64,29 +64,8 @@ export class BookDetailsComponent implements OnInit {
     });
   }
 
-  issueBook(bookId: number) {
-    let result;
-    this.bk.addIssuedBookArray();
-    result = this.bk.checkBookIssued(bookId);
-      if (result === true) {
-        this.bk.issueBook(bookId);
-        Swal({
-          title: 'Issued!',
-          text: 'Book issued successfully',
-          type: 'success'
-        });
-        this.dialogRefClose.close();
-      } else {
-        this.dialogRefClose.close();
-        Swal({
-          title: 'Cannot Re-issue this book',
-          text: 'Book Already issued',
-          type: 'warning'
-        });
-      }
+  closeDialog() {
+    this.dialogRefClose.close();
   }
 
-  returnBook(bookId: number) {
-    this.bk.returnBook(bookId);
-  }
 }

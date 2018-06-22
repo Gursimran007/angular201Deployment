@@ -1,7 +1,12 @@
 #cardsContainer{
-    top: 2rem ;
     display : flex ;
     flex-wrap: wrap;
+    margin: 0 auto;
+    padding: 0;
+}
+
+#cards {
+    position: relative;
     margin: 0 auto;
 }
 
@@ -17,9 +22,16 @@
 }
 
 #filter{
-    /* position: absolute; */
+    margin-bottom: 10px;
 }
 
 #filterAction{
     margin-top: 10px;
+}
+
+@media only screen and (min-width:300px) , (max-width: 991px) {
+    #cards {
+        position: absolute;
+        margin-top: 2rem;
+    }
 }

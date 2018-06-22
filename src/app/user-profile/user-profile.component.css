@@ -5,3 +5,8 @@
     border-radius: 190px;
     margin-top: 20px;
 }
+
+.avatar {
+    background-image: url('../../assets/images/icons8-reading-100-2.png');
+    background-size: cover;
+}

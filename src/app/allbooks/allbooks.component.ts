@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, OnChanges, ViewChild, ElementRef, ViewChildren } from '@angular/core';
+import { Component, OnInit, Input, OnChanges, ViewChild, ElementRef, ViewChildren, AfterViewInit, AfterContentInit } from '@angular/core';
 import { AngularFireDatabase } from 'angularfire2/database';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/map';
@@ -11,13 +11,14 @@ import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { AddbookComponent } from '../addbook/addbook.component';
 import Swal from 'sweetalert2';
 import { AuthService } from '../services/auth.service';
+import { Subscription } from 'rxjs/';
 @Component({
   selector: 'app-allbooks',
   templateUrl: './allbooks.component.html',
   styleUrls: ['./allbooks.component.css']
 })
-export class AllbooksComponent implements OnInit {
-  // @Input() color  = '#4DB6AC';
+export class AllbooksComponent implements OnInit, AfterContentInit {
+
   panelOpenState: Boolean = true;
   categories = [];
   options: FormGroup;
@@ -29,17 +30,23 @@ export class AllbooksComponent implements OnInit {
   emptyCategory: Boolean = false;
   isAdmin: Boolean = false;
   liked: Boolean = false;
+  booksIssued = [];
+  booksArray: Observable<any>;
+  books: Observable<any>;
+  subscription: Subscription;
+  subscriptionBooks: Subscription;
   @ViewChildren('check') categoryIdentifier;
-  constructor(private book: BooksService, fb: FormBuilder, private router: Router, public dialog: MatDialog, private auth: AuthService) {
-    this.options = fb.group({
-      'fixed': false,
-      'top': 100,
-      'bottom': 100,
-    });
-    this.booksObservable = this.book.books;
-  }
+  constructor(private book: BooksService, fb: FormBuilder, private router: Router, public dialog: MatDialog, private auth: AuthService) { }
   ngOnInit() {
-    this.book.getAllBooks();
+    this.book.getAllBooks().subscribe(books => {
+      this.books = books;
+      this.getBooks(this.booksIssued);
+    });
+    this.subscription = this.book.getIssuedBooksByUser().subscribe(booksIssued => {
+      this.booksIssued = booksIssued;
+      this.getBooks(booksIssued);
+    });
+
     this.getCategories();
     this.book.searchValue.subscribe(res => {
       this.searchByName(res);
@@ -47,6 +54,49 @@ export class AllbooksComponent implements OnInit {
     this.auth.admin.subscribe(res => {
       this.isAdminOrUser(res);
     });
+  }
+
+  ngAfterContentInit() {
+
+  }
+
+  checkSubscription() {
+    if (this.subscription) {
+      this.subscription.unsubscribe();
+    }
+    this.subscription = this.book.getIssuedBooksByUser().subscribe(booksIssued => {
+      this.getBooks(booksIssued);
+    });
+  }
+  getBooks(booksIssued) {
+    // this.books.map(book => {
+    //   book['taken'] = false;
+    // });
+    if (booksIssued) {
+      this.books.map(book => {
+        booksIssued.map(issuedBook => {
+          if (issuedBook.bookId === book.ISBN.toString()) {
+            book.taken = true;
+          }
+        });
+      });
+    }
+    this.booksArray = this.books;
+    this.booksObservable = this.booksArray;
+  }
+
+  filterLikedBooks(booksLiked) {
+    this.book.getAllBooks().subscribe(books => {
+      books.map(book => {
+        booksLiked.map(LikedBook => {
+          if (LikedBook.bookId === book.ISBN) {
+            book.liked = true;
+          }
+        });
+      });
+      this.booksArray = books;
+    });
+    // this.subscription.unsubscribe();
   }
 
   isAdminOrUser(res) {
@@ -59,18 +109,17 @@ export class AllbooksComponent implements OnInit {
 
   searchByName(value) {
     if (value === '' || value === undefined || value === null) {
-      this.booksObservable = this.book.books;
+      this.booksArray = this.booksObservable;
     } else {
-      this.booksObservable = this.booksObservable.map(books => {
-        return books.filter(book => {
-          if (book.title.toLowerCase().includes(value.toLowerCase()) ||
+      this.booksArray = this.booksArray.filter(book => {
+        if (book.title.toLowerCase().includes(value.toLowerCase()) ||
           book.categories.toLowerCase().includes(value.toLowerCase()) ||
-           book.authors.toLowerCase().includes(value.toLowerCase())) {
-            return book;
-          }
-        });
+          book.authors.toLowerCase().includes(value.toLowerCase())) {
+          return book;
+        }
       });
     }
+    console.log('value of books array', this.booksArray);
   }
 
   getCategories(): any {
@@ -94,38 +143,36 @@ export class AllbooksComponent implements OnInit {
   filterBooks(event, category) {
     if (event.checked) {
       this.filterCategories.push(category);
-      this.booksObservable = this.book.getAllBooks();
-      this.booksObservable = this.booksObservable
-        .map(books =>
-          books.filter(book => {
-            for (let i = 0; i < this.filterCategories.length; i++) {
-              if (this.filterCategories[i].toLowerCase() === book.categories.toLowerCase()) {
-                return true;
-              }
-            }
-            return false;
-          }));
+      this.booksArray = this.booksObservable;
+      // this.booksArray = this.booksArray
+      //   .map(books =>
+      this.booksArray = this.booksArray.filter(book => {
+        for (let i = 0; i < this.filterCategories.length; i++) {
+          if (this.filterCategories[i].toLowerCase() === book.categories.toLowerCase()) {
+            return true;
+          }
+        }
+        return false;
+      });
     } else {
       this.filterCategories = this.filterCategories.filter(result => result !== category);
-      this.booksObservable = this.book.getAllBooks();
-      this.booksObservable = this.booksObservable
-        .map(books =>
-          books.filter(book => {
-            for (let i = 0; i < this.filterCategories.length; i++) {
-              if (this.filterCategories[i].toLowerCase() === book.categories.toLowerCase()) {
-                return true;
-              }
-            }
-            return false;
-          }));
+      this.booksArray = this.booksObservable;
+      this.booksArray = this.booksArray.filter(book => {
+        for (let i = 0; i < this.filterCategories.length; i++) {
+          if (this.filterCategories[i].toLowerCase() === book.categories.toLowerCase()) {
+            return true;
+          }
+        }
+        return false;
+      });
     }
     if (this.filterCategories.length === 0) {
-      this.booksObservable = this.book.getAllBooks();
+      this.booksArray = this.booksObservable;
     }
   }
 
   clearFilter() {
-    this.booksObservable = this.book.books;
+    this.booksArray = this.booksObservable;
     let unCheck;
     unCheck = this.categoryIdentifier;
     unCheck.map(res => {
@@ -133,7 +180,6 @@ export class AllbooksComponent implements OnInit {
         res.checked = false;
       }
     });
-    // swal('hello world');
   }
 
   openDialog(book) {
@@ -157,63 +203,33 @@ export class AllbooksComponent implements OnInit {
   }
 
   likeBook(bookId) {
-    this.liked = true;
     this.book.likeBook(bookId);
   }
 
-  // unLikeBook(bookId) {
-  //   this.liked = false;
-  // }
+  unLikeBook(bookId) {
+    this.book.unLikeBook(bookId);
+  }
+
 
   issueBook(bookId: number) {
-    let result;
-    this.book.addIssuedBookArray();
-    result = this.book.checkBookIssued(bookId);
-    if (result === true) {
-      this.book.issueBook(bookId);
-      Swal({
-        title: 'Issued!',
-        text: 'Book issued successfully',
-        type: 'success'
-      });
-    } else {
-      Swal({
-        title: 'Cannot Re-issue this book',
-        text: 'Return the book first',
-        type: 'error',
-        showCancelButton: true,
-        confirmButtonColor: '#d33',
-        confirmButtonText: 'Return',
-        cancelButtonText: 'cancel!',
-      }).then((res) => {
-        if (res.value) {
-          this.returnBook(bookId);
-        }
-      });
-    }
-    // this.booksService.checkBookIssued(bookId);
+    this.book.issueBook(bookId);
+    this.booksArray.map(book => {
+      if (book.ISBN === bookId) {
+        book['taken'] = true;
+      }
+    });
+    console.log(this.booksArray);
+    // this.book.addIssuedBookArray();
   }
 
+
   returnBook(bookId: number) {
-    let result;
-    result = this.book.checkBookIssued(bookId);
-    console.log(result);
-    if (result === false) {
-      this.book.returnBook(bookId);
-    }else {
-      Swal({
-        title: 'Cannot Return this book',
-        text: 'Issue the book first',
-        type: 'error',
-        showCancelButton: true,
-        confirmButtonColor: '#d33',
-        confirmButtonText: 'Return',
-        cancelButtonText: 'cancel!',
-      }).then((res) => {
-        if (res.value) {
-          this.returnBook(bookId);
-        }
-      });
-    }
+    this.booksArray.map(book => {
+      if (book.ISBN === bookId) {
+        book['taken'] = false;
+      }
+    });
+    this.book.returnBook(bookId);
   }
+
 }

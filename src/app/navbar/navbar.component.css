@@ -32,7 +32,7 @@ margin: 0 5px 0px 5px;
 }
 
 #searchMaterialIcon:hover{
-    cursor: hand;
+    cursor: pointer;
 }
 
  #serachIcon{
