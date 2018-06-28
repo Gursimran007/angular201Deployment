@@ -37,13 +37,16 @@ export class AuthService implements OnInit {
   }
 
   signInWithGoogle() {
-    this._firebaseAuth.auth.signInWithPopup(
+    let res;
+    let auth = this._firebaseAuth.auth.signInWithPopup(
       new firebase.auth.GoogleAuthProvider()
     ).then(response => {
+      res = response;
       this.isLoggedInNormal(this._firebaseAuth.authState);
       this.CurrentUserAuth();
       this.router.navigate(['/library']);
-    }).catch(error => {
+    });
+    if (res) {
       this.isUserLoggedIn.next(false);
       Swal({
         title: 'Error',
@@ -51,8 +54,8 @@ export class AuthService implements OnInit {
         type: 'warning'
       });
       this.isUserLoggedIn.next(false);
-      // this.router.navigate(['/login']);
-    });
+    }
+    return auth;
   }
 
   signInRegular(email, password) {
@@ -106,7 +109,7 @@ export class AuthService implements OnInit {
   }
 
   CurrentUserAuth() {
-    const user = new UserProfile(this.getCurrentUserId(), this.getName(), null, this.getEmail(), this.getPhotoUrl());
+    const user = new UserProfile(this.getCurrentUserId(), this.getName(), '', this.getEmail(), this.getPhotoUrl());
     this.database.database.ref('/Users').child(this.getCurrentUserId()).set(user);
   }
 

@@ -69,19 +69,17 @@ export class AllbooksComponent implements OnInit, AfterContentInit {
     });
   }
   getBooks(booksIssued) {
-    // this.books.map(book => {
-    //   book['taken'] = false;
-    // });
     if (booksIssued) {
       this.books.map(book => {
         booksIssued.map(issuedBook => {
-          if (issuedBook.bookId === book.ISBN.toString()) {
+          if (issuedBook.bookId === book.ISBN) {
             book.taken = true;
           }
         });
       });
     }
     this.booksArray = this.books;
+    console.log('booksArray value', this.booksArray);
     this.booksObservable = this.booksArray;
   }
 
@@ -119,7 +117,6 @@ export class AllbooksComponent implements OnInit, AfterContentInit {
         }
       });
     }
-    console.log('value of books array', this.booksArray);
   }
 
   getCategories(): any {
@@ -214,22 +211,22 @@ export class AllbooksComponent implements OnInit, AfterContentInit {
   issueBook(bookId: number) {
     this.book.issueBook(bookId);
     this.booksArray.map(book => {
+      console.log(book.ISBN , bookId);
       if (book.ISBN === bookId) {
         book['taken'] = true;
       }
     });
-    console.log(this.booksArray);
     // this.book.addIssuedBookArray();
   }
 
 
   returnBook(bookId: number) {
+    this.book.returnBook(bookId);
     this.booksArray.map(book => {
       if (book.ISBN === bookId) {
         book['taken'] = false;
       }
     });
-    this.book.returnBook(bookId);
   }
 
 }

@@ -11,15 +11,13 @@
         </div>
         <!-- <div>Books Issued</div> -->
         <div class="col-lg-7" *ngFor="let books of booksIssued">
-          <div style="display: flex;">
+          <div style="display: flex;margin-bottom: 5px;">
             <div mat-card-avatar class="avatar"></div>
             <h6>{{books.bookName}}</h6>
-            <div style="display: flex;">
-              Issue Date :
-              <h6>{{books.issueDate}}</h6>
-              Return Date :
-              <h5>{{books.returnDate}}</h5>
-            </div>
+          </div>
+          <div>
+            <h6>Issue Date: {{books.issueDate}}</h6>
+            <h6>Return Date:{{books.returnDate}}</h6>
           </div>
         </div>
       </div>

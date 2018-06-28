@@ -163,14 +163,15 @@ export class BooksService {
     });
     this.db.object<Book>('/getBooks/' + bookid).update({
       issued: issueNumber + 1,
-      copies: copiesCount - 1
+      copies: copiesCount - 1,
     });
 
     const issueBook = {
-      'userId': this.auth.userID, 'bookId': booksearched.ISBN.toString(),
+      'userId': this.auth.userID, 'bookId': booksearched.ISBN,
       'bookName': booksearched.title.toString(), 'userName': this.auth.getName(),
       'issueDate': this.getTodaysDate(), 'returnDate': this.returnDate()
     };
+
     const ref = this.db.database.ref('/BooksIssued').push(issueBook);
     ref.update({
       id: ref.key
@@ -200,7 +201,7 @@ export class BooksService {
 
     this.db.object<Book>('/getBooks/' + bookId).update({
       issued: issueNumber - 1,
-      copies: copiesCount + 1
+      copies: copiesCount + 1,
     });
 
     const issuedBooksDetails = this.db.list<IssuedBookDetails>('/BooksIssued', ref => ref.orderByChild('bookId')).valueChanges();
