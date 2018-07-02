@@ -38,7 +38,7 @@ export class AuthService implements OnInit {
 
   signInWithGoogle() {
     let res;
-    let auth = this._firebaseAuth.auth.signInWithPopup(
+    const auth = this._firebaseAuth.auth.signInWithPopup(
       new firebase.auth.GoogleAuthProvider()
     ).then(response => {
       res = response;
@@ -71,16 +71,17 @@ export class AuthService implements OnInit {
     return this.getAuthenticated() ? this.authState : null;
   }
   getCurrentUserId(): any {
-    return this.getAuthenticated() ? this.authState.uid : null;
+    // return this.getAuthenticated() ? this.authState.uid : null;
+    return this.authState.uid;
   }
   getPhotoUrl(): any {
-    return this.getAuthenticated() ? this.authState.photoURL : null;
+    return  this.authState.photoURL;
   }
   getName(): any {
-    return this.getAuthenticated() ? this.authState.displayName : null;
+    return this.authState.displayName;
   }
   getEmail(): any {
-    return this.getAuthenticated() ? this.authState.email : null;
+    return this.authState.email;
   }
   getCurrentUserObservable(): Observable<any> {
     this.user.subscribe(

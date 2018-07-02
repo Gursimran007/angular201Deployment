@@ -29,9 +29,9 @@ export class BooksService {
 
   getAllBooks() {
     this.books = this.db.list<Book>('/getBooks').valueChanges();
-    this.db.list<Book>('/getBooks').valueChanges().subscribe(response => {
-      this.booksArray = response;
-    });
+    // this.db.list<Book>('/getBooks').valueChanges().subscribe(response => {
+    //   this.booksArray = response;
+    // });
     return this.books;
   }
 
@@ -60,18 +60,18 @@ export class BooksService {
   }
 
 
-  checkIfBookAlreadyPresent(book) {
-    let check: Boolean = true;
-    for (let i = 0; i < this.booksArray.length; i++) {
-      if (this.booksArray[i].ISBN === book.ISBN) {
-        check = true;
-      } else {
-        check = false;
-        break;
-      }
-    }
-    return check;
-  }
+  // checkIfBookAlreadyPresent(book) {
+  //   let check: Boolean = true;
+  //   for (let i = 0; i < this.booksArray.length; i++) {
+  //     if (this.booksArray[i].ISBN === book.ISBN) {
+  //       check = true;
+  //     } else {
+  //       check = false;
+  //       break;
+  //     }
+  //   }
+  //   return check;
+  // }
 
   likeBook(bookId: number) {
     let booksearched;
@@ -150,7 +150,7 @@ export class BooksService {
     });
   }
 
-  issueBook(bookid: number) {
+  issueBook(bookid: number , bookName) {
     let booksearched: Book;
     let issueNumber: number;
     let copiesCount: number;
@@ -161,14 +161,14 @@ export class BooksService {
         copiesCount = book.copies;
       }
     });
-    this.db.object<Book>('/getBooks/' + bookid).update({
-      issued: issueNumber + 1,
-      copies: copiesCount - 1,
-    });
+    // this.db.object<Book>('/getBooks/' + bookid).update({
+    //   issued: issueNumber + 1,
+    //   copies: copiesCount - 1,
+    // });
 
     const issueBook = {
-      'userId': this.auth.userID, 'bookId': booksearched.ISBN,
-      'bookName': booksearched.title.toString(), 'userName': this.auth.getName(),
+      'userId': this.auth.userID, 'bookId': bookid,
+      'bookName': bookName, 'userName': this.auth.getName(),
       'issueDate': this.getTodaysDate(), 'returnDate': this.returnDate()
     };
 
@@ -188,21 +188,16 @@ export class BooksService {
       .equalTo(this.auth.userID)).valueChanges();
   }
 
-  returnBook(bookId: number) {
-    let issueNumber: number;
-    let copiesCount: number;
+  returnBook(bookId: number ) {
+    // let issueNumber: number;
+    // let copiesCount: number;
 
-    this.booksArray.filter(book => {
-      if (book.ISBN === bookId) {
-        issueNumber = book.issued;
-        copiesCount = book.copies;
-      }
-    });
-
-    this.db.object<Book>('/getBooks/' + bookId).update({
-      issued: issueNumber - 1,
-      copies: copiesCount + 1,
-    });
+    // this.booksArray.filter(book => {
+    //   if (book.ISBN === bookId) {
+    //     issueNumber = book.issued;
+    //     copiesCount = book.copies;
+    //   }
+    // });
 
     const issuedBooksDetails = this.db.list<IssuedBookDetails>('/BooksIssued', ref => ref.orderByChild('bookId')).valueChanges();
     issuedBooksDetails.subscribe(
@@ -214,6 +209,10 @@ export class BooksService {
         }
       }
     );
+    // this.db.object<Book>('/getBooks/' + bookId).update({
+    //   issued: issueNumber - 1,
+    //   copies: copiesCount + 1,
+    // });
   }
 
   getTodaysDate() {

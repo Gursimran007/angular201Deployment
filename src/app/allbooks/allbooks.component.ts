@@ -40,7 +40,7 @@ export class AllbooksComponent implements OnInit, AfterContentInit {
   ngOnInit() {
     this.book.getAllBooks().subscribe(books => {
       this.books = books;
-      this.getBooks(this.booksIssued);
+      // this.getBooks(this.booksIssued);
     });
     this.subscription = this.book.getIssuedBooksByUser().subscribe(booksIssued => {
       this.booksIssued = booksIssued;
@@ -60,14 +60,14 @@ export class AllbooksComponent implements OnInit, AfterContentInit {
 
   }
 
-  checkSubscription() {
-    if (this.subscription) {
-      this.subscription.unsubscribe();
-    }
-    this.subscription = this.book.getIssuedBooksByUser().subscribe(booksIssued => {
-      this.getBooks(booksIssued);
-    });
-  }
+  // checkSubscription() {
+  //   if (this.subscription) {
+  //     this.subscription.unsubscribe();
+  //   }
+  //   this.subscription = this.book.getIssuedBooksByUser().subscribe(booksIssued => {
+  //     this.getBooks(booksIssued);
+  //   });
+  // }
   getBooks(booksIssued) {
     if (booksIssued) {
       this.books.map(book => {
@@ -79,7 +79,6 @@ export class AllbooksComponent implements OnInit, AfterContentInit {
       });
     }
     this.booksArray = this.books;
-    console.log('booksArray value', this.booksArray);
     this.booksObservable = this.booksArray;
   }
 
@@ -208,10 +207,9 @@ export class AllbooksComponent implements OnInit, AfterContentInit {
   }
 
 
-  issueBook(bookId: number) {
-    this.book.issueBook(bookId);
+  issueBook(bookId: number , bookName) {
+    this.book.issueBook(bookId , bookName);
     this.booksArray.map(book => {
-      console.log(book.ISBN , bookId);
       if (book.ISBN === bookId) {
         book['taken'] = true;
       }
@@ -220,13 +218,14 @@ export class AllbooksComponent implements OnInit, AfterContentInit {
   }
 
 
-  returnBook(bookId: number) {
-    this.book.returnBook(bookId);
+  returnBook(bookId: number , bookName) {
     this.booksArray.map(book => {
       if (book.ISBN === bookId) {
         book['taken'] = false;
       }
     });
+    this.book.returnBook(bookId);
+    console.log(this.booksArray);
   }
 
 }

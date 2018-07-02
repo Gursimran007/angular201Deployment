@@ -39,8 +39,8 @@
               </div>
             </div>
             <mat-card-actions>
-              <button *ngIf="!isAdmin && !book.taken" mat-raised-button class="knowMore" color="accent" (click)="issueBook(book.ISBN , i)">Issue</button>
-              <button *ngIf="!isAdmin && book.taken" mat-raised-button class="knowMore" color="warn" (click)="returnBook(book.ISBN)">Return</button>
+              <button *ngIf="!isAdmin && !book.taken" mat-raised-button class="knowMore" color="accent" (click)="issueBook(book.ISBN , book.title , i)">Issue</button>
+              <button *ngIf="!isAdmin && book.taken" mat-raised-button class="knowMore" color="warn" (click)="returnBook(book.ISBN , book.title)">Return</button>
               <button mat-raised-button color="primary" *ngIf="!isAdmin" class="knowMore" (click)="likeBook(book.ISBN)">{{book.likes}}
                 <i class="material-icons">thumb_up</i>
               </button>
